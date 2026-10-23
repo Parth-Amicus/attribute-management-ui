@@ -1,59 +1,60 @@
-# AttributeManagementUi
+# Attribute Management UI
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.2.2.
+## Project Overview
 
-## Development server
+This project is the UI foundation for an Attribute Management System, developed using Angular and TypeScript
 
-To start a local development server, run:
 
-```bash
-ng serve
-```
+## Project Setup
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+### Run the Application
 
 ```bash
-ng generate component component-name
+npm start
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+If the start script is unavailable, use:
 
 ```bash
-ng generate --help
+npx ng serve
 ```
 
-## Building
+Open `http://localhost:4200/` in your browser.
 
-To build the project run:
+## Standalone Components vs NgModules
 
-```bash
-ng build
-```
+Angular supports both standalone components and NgModules to organize application building blocks and their dependencies
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+### Standalone Components
 
-## Running unit tests
+Standalone components manage their own template dependencies through their `imports` property. They do not need to be declared in an NgModule.
+ The component is self-contained and manages its own dependencies directly.
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+Advantages:
+- Less boilerplate and simpler setup.
+- Dependencies are easy to identify within each component.
+- Components are easier to reuse independently.
+- Works well with modern Angular applications and lazy-loaded routes.
 
-```bash
-ng test
-```
+### NgModules
 
-## Running end-to-end tests
+NgModules group related components, directives, pipes, and services into a module. Components that are not standalone are generally declared in an NgModule.
+ you must create a separate module file to declare the component and import its dependencies.
 
-For end-to-end (e2e) testing, run:
+Advantages:
+- Provides a familiar organizational structure for existing Angular applications.
+- Can group related features and their dependencies.
+- Useful when maintaining legacy applications built around NgModules.
 
-```bash
-ng e2e
-```
+### Why Choose Standalone for This Project?
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+I chose standalone components because this is a new Angular application and does not need to maintain a legacy NgModule-based structure.
 
-## Additional Resources
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+### When Would I Choose NgModules?
+
+I would consider NgModules when working on an existing application that already uses them, when maintaining its established architecture, or when a team has specific module-based conventions.
+
+Both approaches are valid. The choice depends on the application's requirements, existing architecture, and maintenance needs.
+
+
