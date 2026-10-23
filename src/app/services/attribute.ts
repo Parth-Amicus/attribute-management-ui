@@ -30,7 +30,7 @@ export class AttributeService {
       CustomerLocationName: 'Ahmedabad',
       CompanyName: 'Abc Technology',
       IsActive: true,
-      CreatedOn: new Date('2024-01-10'),
+      CreatedOn: new Date('2024-01-10'), // using date object unlocks different methods 
       CreatedBy: 'Admin',
       UpdatedOn: new Date('2026-08-12'),
       UpdatedBy: 'Parth'
