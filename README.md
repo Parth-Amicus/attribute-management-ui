@@ -69,3 +69,12 @@ The application uses four TypeScript interfaces:
 - `ICompany`: Defines a company lookup record.
 
 These interfaces provide compile-time type checking and a consistent data structure across components and services. They help catch incorrect property names and incompatible value types during development.
+
+
+
+## Attribute Service
+
+The service uses `providedIn: 'root'` so the application can share one
+service instance between components. It includes methods to retrieve,
+find, add, update, and delete attributes.
+
