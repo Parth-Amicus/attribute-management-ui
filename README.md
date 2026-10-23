@@ -58,3 +58,14 @@ I would consider NgModules when working on an existing application that already 
 Both approaches are valid. The choice depends on the application's requirements, existing architecture, and maintenance needs.
 
 
+
+## Data Models
+
+The application uses four TypeScript interfaces:
+
+- `IAttribute`: Defines an attribute and its audit information.
+- `IBusinessUnit`: Defines a business unit lookup record.
+- `ICustomerLocation`: Defines a customer location lookup record.
+- `ICompany`: Defines a company lookup record.
+
+These interfaces provide compile-time type checking and a consistent data structure across components and services. They help catch incorrect property names and incompatible value types during development.
