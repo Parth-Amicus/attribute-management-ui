@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { AttributeList } from './attribute-list';
+import { AttributeListComponent } from './attribute-list';
 
 describe('AttributeList', () => {
-  let component: AttributeList;
-  let fixture: ComponentFixture<AttributeList>;
+  let component: AttributeListComponent;
+  let fixture: ComponentFixture<AttributeListComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AttributeList],
+      imports: [AttributeListComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(AttributeList);
+    fixture = TestBed.createComponent(AttributeListComponent);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

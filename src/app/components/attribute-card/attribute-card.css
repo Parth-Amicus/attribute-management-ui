@@ -1,0 +1,43 @@
+
+.attribute-card {
+  padding: 20px;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background: white;
+  box-shadow: 0 2px 6px rgb(0 0 0 / 5%);
+}
+
+.card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+h3 {
+  margin: 0;
+  color: #243047;
+}
+
+p {
+  margin: 10px 0;
+  color: #475569;
+}
+
+.status {
+  padding: 4px 9px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.status.active {
+  color: #166534;
+  background: #dcfce7;
+}
+
+.status.inactive {
+  color: #991b1b;
+  background: #fee2e2;
+}

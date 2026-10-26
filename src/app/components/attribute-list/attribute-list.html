@@ -3,40 +3,69 @@
   <h1>Attribute Management</h1>
   <p class="subtitle">View and manage your attributes</p>
 
-  <div class="table-container">
-    <table>
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Attribute Name</th>
-          <th>Business Unit</th>
-          <th>Customer Location</th>
-          <th>Company</th>
-          <th>Status</th>
-          <th>Created On</th>
-        </tr>
-      </thead>
+  <div class="view-toggle">
+    <button
+      type="button"
+      [class.selected]="viewMode === 'table'"
+      [attr.aria-pressed]="viewMode === 'table'"
+      (click)="setView('table')">
+      Table View
+    </button>
 
-      <tbody>
-        @for (attribute of attributes; track attribute.AttributeId) {
-          <tr>
-          <!-- {{}}interpolation - display ts value in html -->
-            <td>{{ attribute.AttributeId }}</td>
-            <td>{{ attribute.AttributeName }}</td>
-            <td>{{ attribute.BusinessUnitName }}</td>
-            <td>{{ attribute.CustomerLocationName }}</td>
-            <td>{{ attribute.CompanyName }}</td>
-            <td>
-              {{ attribute.IsActive ? 'Active' : 'Inactive' }}
-            </td>
-            <td>{{ attribute.CreatedOn | date:'mediumDate' }}</td>
-          </tr>
-        } @empty {
-          <tr>
-            <td colspan="7">No attributes found</td>
-          </tr>
-        }
-      </tbody>
-    </table>
+    <button
+      type="button"
+      [class.selected]="viewMode === 'card'"
+      [attr.aria-pressed]="viewMode === 'card'"
+      (click)="setView('card')">
+      Card View
+    </button>
   </div>
+
+  @if (viewMode === 'table') {
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Attribute Name</th>
+            <th>Business Unit</th>
+            <th>Customer Location</th>
+            <th>Company</th>
+            <th>Status</th>
+            <th>Created On</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          @for (attribute of attributes; track attribute.AttributeId) {
+            <tr>
+              <!-- {{}}interpolation - display ts value in html -->
+              <td>{{ attribute.AttributeId }}</td>
+              <td>{{ attribute.AttributeName }}</td>
+              <td>{{ attribute.BusinessUnitName }}</td>
+              <td>{{ attribute.CustomerLocationName }}</td>
+              <td>{{ attribute.CompanyName }}</td>
+              <td>
+                {{ attribute.IsActive ? 'Active' : 'Inactive' }}
+              </td>
+              <td>{{ attribute.CreatedOn | date:'mediumDate' }}</td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="7">No attributes found.</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  } @else {
+    <div class="card-grid">
+      @for (attri of attributes; track attri.AttributeId) {
+        <app-attribute-card [attribute]="attri" />
+        <!-- [attribute] on the left refers to an input property on AttributeCardComponent -->
+        } @empty {
+        <p>No attributes found</p>
+      }
+    </div>
+  }
 </section>
