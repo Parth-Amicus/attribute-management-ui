@@ -48,7 +48,9 @@
               <td>{{ attribute.CustomerLocationName }}</td>
               <td>{{ attribute.CompanyName }}</td>
               <td>
-                {{ attribute.IsActive ? 'Active' : 'Inactive' }}
+                  <span [appActiveStatus]="attribute">
+                  {{ attribute.IsActive ? 'Active' : 'Inactive' }}
+                  </span>
               </td>
               <td>{{ attribute.CreatedOn | date:'mediumDate' }}</td>
             </tr>

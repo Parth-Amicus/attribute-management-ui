@@ -99,3 +99,12 @@ and `ngOnDestroy`.
 4. Switching back to Card View creates new instances, so the initial lifecycle sequence runs again
 
 5. In a real application, ngOnDestroy is used to clean up resources such as manually managed subscriptions, timers or event listeners when the component is destroyed
+
+## Custom Attribute Directive: appActiveStatus
+
+`ActiveStatusDirective` reads an `IAttribute` object and applies
+status-dependent badge styling and a tooltip
+
+The directive uses `@Input` to receive the attribute object and
+`Renderer2` to update the element's styles and title attribute
+It is reused in both the table and card views

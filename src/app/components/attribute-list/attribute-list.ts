@@ -4,11 +4,12 @@ import { DatePipe } from '@angular/common';
 import { AttributeService } from '../../services/attribute';
 import { IAttribute } from '../../interface/attribute.interface';
 import { AttributeCardComponent } from '../attribute-card/attribute-card';
+import { ActiveStatusDirective } from '../../directives/active-status';
 
 @Component({
   selector: 'app-attribute-list',
   standalone: true,
-  imports: [DatePipe, AttributeCardComponent],
+  imports: [DatePipe, AttributeCardComponent,ActiveStatusDirective],
   templateUrl: './attribute-list.html', // html gets access to attributes from here 
   styleUrl: './attribute-list.css'
 })

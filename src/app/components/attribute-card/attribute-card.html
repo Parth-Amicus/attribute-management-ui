@@ -4,12 +4,11 @@
     <h3>{{ attribute.AttributeName }}</h3>
 
     <!-- property binding -->
-    <span
-      class="status"
-      [class.active]="attribute.IsActive"
-      [class.inactive]="!attribute.IsActive">
-      {{ attribute.IsActive ? 'Active' : 'Inactive' }}
-    </span>
+
+<span [appActiveStatus]="attribute">
+  {{ attribute.IsActive ? 'Active' : 'Inactive' }}
+</span>
+
   </div>
 
   <p><strong>ID:</strong> {{ attribute.AttributeId }}</p>

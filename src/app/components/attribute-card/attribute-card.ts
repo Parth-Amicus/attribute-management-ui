@@ -2,11 +2,12 @@
 import { Component, Input, OnInit, OnChanges, OnDestroy, SimpleChanges } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { IAttribute } from '../../interface/attribute.interface';
+import { ActiveStatusDirective } from '../../directives/active-status';
 
 @Component({
   selector: 'app-attribute-card',
   standalone: true,
-  imports: [DatePipe],
+  imports: [DatePipe,ActiveStatusDirective],
   templateUrl: './attribute-card.html',
   styleUrl: './attribute-card.css'
 })
