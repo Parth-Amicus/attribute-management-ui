@@ -1,15 +1,17 @@
 
 import { Component, OnInit } from '@angular/core';
-//import { DatePipe } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import { AttributeService } from '../../services/attribute';
 import { IAttribute } from '../../interface/attribute.interface';
 import { AttributeCardComponent } from '../attribute-card/attribute-card';
 import { ActiveStatusDirective } from '../../directives/active-status';
 import { RelativeTimePipe } from '../../pipes/relative-time-pipe';
+import { FormsModule } from '@angular/forms';
+import { FilterByDirective } from '../../directives/filter-by';
 @Component({
   selector: 'app-attribute-list',
   standalone: true,
-  imports: [AttributeCardComponent,ActiveStatusDirective,RelativeTimePipe],
+  imports: [FormsModule,FilterByDirective,AttributeCardComponent,ActiveStatusDirective,RelativeTimePipe],
   templateUrl: './attribute-list.html', // html gets access to attributes from here 
   styleUrl: './attribute-list.css'
 })
@@ -19,6 +21,9 @@ export class AttributeListComponent implements OnInit {
 
   // the table is the default view
   viewMode: 'table' | 'card' = 'table';
+
+    // search term stays in the parent when the view changes
+  searchTerm = '';
 
   constructor(private attributeService: AttributeService) {} // provides service instance
 

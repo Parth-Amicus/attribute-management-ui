@@ -3,6 +3,21 @@
   <h1>Attribute Management</h1>
   <p class="subtitle">View and manage your attributes</p>
 
+
+  
+<div class="search-container">
+  <label for="attribute-search">Search attributes</label>
+
+  <input
+    id="attribute-search"
+    type="search"
+    /* connecting the search term property in component */
+    [(ngModel)]="searchTerm"
+    placeholder="Search by attribute name or business unit"
+  />
+</div>
+
+
   <div class="view-toggle">
     <button
       type="button"
@@ -41,7 +56,7 @@
 
         <tbody>
           @for (attribute of attributes; track attribute.AttributeId) {
-            <tr>
+            <tr  *appFilterBy="{ item: attribute, term: searchTerm }">
               <!-- {{}}interpolation - display ts value in html -->
               <td>{{ attribute.AttributeId }}</td>
               <td>{{ attribute.AttributeName }}</td>
@@ -68,7 +83,7 @@
   } @else {
     <div class="card-grid">
       @for (attri of attributes; track attri.AttributeId) {
-        <app-attribute-card [attribute]="attri" />
+        <app-attribute-card   *appFilterBy="{ item: attri, term: searchTerm }" [attribute]="attri" />
         <!-- [attribute] on the left refers to an input property on AttributeCardComponent -->
         } @empty {
         <p>No attributes found</p>

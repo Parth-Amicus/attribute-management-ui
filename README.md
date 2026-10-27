@@ -108,3 +108,11 @@ status-dependent badge styling and a tooltip
 The directive uses `@Input` to receive the attribute object and
 `Renderer2` to update the element's styles and title attribute
 It is reused in both the table and card views
+
+## Search and Custom Structural Directive 
+
+- Why a directive instead of a pipe?
+
+- A filtering pipe normally returns a filtered array, leaving the template to render the results. This assignment specifically asks us to practice a structural directive, so our directive controls whether each row or card is rendered.
+
+- In a real application, a pipe or a filtering method may be more suitable when transforming collections for display, particularly if we want the filtered collection itself for pagination, counts, or other calculations.
