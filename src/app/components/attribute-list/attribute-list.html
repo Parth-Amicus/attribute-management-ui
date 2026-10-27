@@ -6,7 +6,9 @@
   <div class="view-toggle">
     <button
       type="button"
-      [class.selected]="viewMode === 'table'"
+      /* property binding */
+      [class.selected]="viewMode === 'table'" 
+      
       [attr.aria-pressed]="viewMode === 'table'"
       (click)="setView('table')">
       Table View

@@ -78,3 +78,24 @@ The service uses `providedIn: 'root'` so the application can share one
 service instance between components. It includes methods to retrieve,
 find, add, update, and delete attributes.
 
+
+
+## Angular Lifecycle Hooks
+
+`AttributeCardComponent` implements `ngOnChanges`, `ngOnInit`,
+and `ngOnDestroy`.
+
+- `ngOnChanges`: observes changes to the component's input properties.
+- `ngOnInit`: runs once after the initial input setup.
+- `ngOnDestroy`: runs before the component is destroyed and is used
+  to clean up resources.
+
+1. On card creation, ngOnChanges runs first because Angular initializes the @Input property. ngOnInit runs afterwards
+
+2. Switching from Table View to Card View creates card instances, so their initial ngOnChanges and ngOnInit hooks run
+
+3. Switching from Card View to Table View removes the card components. Angular calls ngOnDestroy on each removed card
+
+4. Switching back to Card View creates new instances, so the initial lifecycle sequence runs again
+
+5. In a real application, ngOnDestroy is used to clean up resources such as manually managed subscriptions, timers or event listeners when the component is destroyed
