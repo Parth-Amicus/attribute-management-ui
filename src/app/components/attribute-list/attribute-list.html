@@ -35,6 +35,7 @@
             <th>Company</th>
             <th>Status</th>
             <th>Created On</th>
+            <th>Updated On</th>
           </tr>
         </thead>
 
@@ -52,7 +53,9 @@
                   {{ attribute.IsActive ? 'Active' : 'Inactive' }}
                   </span>
               </td>
-              <td>{{ attribute.CreatedOn | date:'mediumDate' }}</td>
+              <td>{{ attribute.CreatedOn | relativeTime }}</td>
+              <td>{{ attribute.UpdatedOn | relativeTime }}</td>
+                              <!-- value | pipe name -->
             </tr>
           } @empty {
             <tr>
