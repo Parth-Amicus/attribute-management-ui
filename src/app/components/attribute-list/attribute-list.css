@@ -100,3 +100,20 @@ tbody tr:last-child td {
   outline: 2px solid #93c5fd;
   border-color: #2563eb;
 }
+.add-attribute-link {
+  display: inline-block;
+  margin: 12px 0;
+  padding: 10px 14px;
+  color: white;
+  background: #1d4ed8;
+  border-radius: 6px;
+  text-decoration: none;
+}
+
+.page-head{
+  display: flex;
+  justify-content: space-between;
+  align-items: center; /* Keeps them vertically centered aligned */
+  width: 100%;        /* Ensures the container takes up the full width */
+  gap: 10px;
+}

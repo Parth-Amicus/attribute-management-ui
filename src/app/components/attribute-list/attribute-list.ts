@@ -8,10 +8,11 @@ import { ActiveStatusDirective } from '../../directives/active-status';
 import { RelativeTimePipe } from '../../pipes/relative-time-pipe';
 import { FormsModule } from '@angular/forms';
 import { FilterByDirective } from '../../directives/filter-by';
+import { RouterLink } from '@angular/router'; //lets user to navigate to different url - used in html
 @Component({
   selector: 'app-attribute-list',
   standalone: true,
-  imports: [FormsModule,FilterByDirective,AttributeCardComponent,ActiveStatusDirective,RelativeTimePipe],
+  imports: [RouterLink,FormsModule,FilterByDirective,AttributeCardComponent,ActiveStatusDirective,RelativeTimePipe],
   templateUrl: './attribute-list.html', // html gets access to attributes from here 
   styleUrl: './attribute-list.css'
 })

@@ -1,0 +1,122 @@
+
+<section class="form-page">
+  <h1>Add Attribute</h1>
+  <p class="subtitle">Enter the details for the new attribute</p>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+    <!-- novalidate disables the browser built-in HTML form validation UI, allowing Angular to manage validation -->
+
+    <div class="form-field">
+      <label for="attributeName">Attribute Name *</label>
+
+      <input
+        id="attributeName"
+        type="text"
+        formControlName="attributeName"
+        [class.invalid]="isFieldInvalid('attributeName')"
+        [attr.aria-invalid]="isFieldInvalid('attributeName')"
+      />
+
+      @if (isFieldInvalid('attributeName')) {
+        @if (form.controls.attributeName.hasError('required')) {
+          <p class="error">Attribute Name is required</p>
+        } @else if (form.controls.attributeName.hasError('whitespace')) {
+          <p class="error">Attribute Name cannot contain only spaces</p>
+        } @else if (form.controls.attributeName.hasError('minlength')) {
+          <p class="error">Enter at least 3 characters</p>
+        } @else if (form.controls.attributeName.hasError('invalidCharacters')) {
+          <p class="error">Only letters, numbers, spaces, and hyphens are allowed</p>
+        }
+      }
+    </div>
+
+    <div class="form-field">
+      <label for="businessId">Business Unit *</label>
+
+      <select
+        id="businessId"
+        formControlName="businessId"
+        [class.invalid]="isFieldInvalid('businessId')"
+      >
+        <option [ngValue]="null">Select a business unit</option>
+
+        @for (unit of businessUnits; track unit.BusinessId) {
+          <option [ngValue]="unit.BusinessId">
+            {{ unit.BusinessName }}
+          </option>
+        }
+      </select>
+
+      @if (isFieldInvalid('businessId')) {
+        <p class="error">Please select a business unit</p>
+      }
+    </div>
+
+    <div class="form-field">
+      <label for="customerLocationId">Customer Location *</label>
+
+      <select
+        id="customerLocationId"
+        formControlName="customerLocationId"
+        [class.invalid]="isFieldInvalid('customerLocationId')"
+      >
+        <option [ngValue]="null">Select a customer location</option>
+
+        @for (location of customerLocations; track location.CustomerLocationId) {
+          <option [ngValue]="location.CustomerLocationId">
+            {{ location.CustomerLocationName }}
+          </option>
+        }
+      </select>
+
+      @if (isFieldInvalid('customerLocationId')) {
+        <p class="error">Please select a customer location</p>
+      }
+    </div>
+
+    <div class="form-field">
+      <label for="companyId">Company *</label>
+
+      <select
+        id="companyId"
+        formControlName="companyId"
+        [class.invalid]="isFieldInvalid('companyId')"
+      >
+        <option [ngValue]="null">Select a company</option>
+
+        @for (company of companies; track company.CompanyId) {
+          <option [ngValue]="company.CompanyId">
+            {{ company.CompanyName }}
+          </option>
+        }
+      </select>
+
+      @if (isFieldInvalid('companyId')) {
+        <p class="error">Please select a company</p>
+      }
+    </div>
+
+    <div class="checkbox-field">
+      <input
+        id="isActive"
+        type="checkbox"
+        formControlName="isActive"
+      />
+      <label for="isActive">Active</label>
+    </div>
+
+    <div class="form-actions">
+      <span
+        [attr.title]="form.invalid
+          ? 'Complete all required fields and correct validation errors'
+          : null"
+      >
+        <button type="submit" [disabled]="form.invalid">
+          Add Attribute
+        </button>
+      </span>
+
+      <a routerLink="/">Cancel</a>
+    </div>
+  </form>
+</section>

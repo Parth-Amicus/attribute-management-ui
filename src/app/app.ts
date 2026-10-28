@@ -3,7 +3,7 @@ import { RouterOutlet } from '@angular/router';
 import { AttributeListComponent } from './components/attribute-list/attribute-list';
 
 @Component({
-  imports: [RouterOutlet, AttributeListComponent],
+  imports: [RouterOutlet, AttributeListComponent], //route outlet so that app.html can use 
   selector: 'app-root',
   styleUrl: './app.css',
   templateUrl: './app.html',

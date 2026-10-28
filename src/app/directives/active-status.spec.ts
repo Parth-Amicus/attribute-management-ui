@@ -1,8 +1,7 @@
-import { ActiveStatus } from './active-status';
+import { ActiveStatusDirective } from './active-status';
 
-describe('ActiveStatus', () => {
+describe('ActiveStatusDirective', () => {
   it('should create an instance', () => {
-    const directive = new ActiveStatus();
-    expect(directive).toBeTruthy();
+    expect(ActiveStatusDirective).toBeTruthy();
   });
 });

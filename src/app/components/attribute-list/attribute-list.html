@@ -1,6 +1,12 @@
 
 <section class="page">
-  <h1>Attribute Management</h1>
+  <div class = "page-head">
+      <h1>Attribute Management</h1> 
+    <a class="add-attribute-link" routerLink="/add-attribute"> Add Attribute
+    </a>
+  </div>
+
+
   <p class="subtitle">View and manage your attributes</p>
 
 
@@ -36,6 +42,7 @@
       (click)="setView('card')">
       Card View
     </button>
+    
   </div>
 
   @if (viewMode === 'table') {
