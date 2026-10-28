@@ -1,9 +1,15 @@
 import { Routes } from '@angular/router';
 import { AttributeListComponent } from './components/attribute-list/attribute-list';
 import { AddAttributeComponent} from './components/add-attribute/add-attribute';
+import { EditAttributeComponent } from './components/edit-attribute/edit-attribute';
+import { unsavedChangesGuard } from './guards/unsaved-changes-guard';
+
+//WORKS ON FIRST MATCH
 
 export const routes: Routes = [
   { path: '', component: AttributeListComponent }, // no additional path after the domain
   { path: 'add-attribute', component: AddAttributeComponent },
-  { path: '**', redirectTo: '' } // if any other redirect to default
-];
+  { path: 'edit-attribute/:id',component: EditAttributeComponent,canDeactivate:[unsavedChangesGuard]}, //id is route parameter
+
+  { path: '**', redirectTo: '' }, // if any other redirect to default
+  ];

@@ -58,6 +58,7 @@
             <th>Status</th>
             <th>Created On</th>
             <th>Updated On</th>
+            <th>Action</th>
           </tr>
         </thead>
 
@@ -78,10 +79,14 @@
               <td>{{ attribute.CreatedOn | relativeTime }}</td>
               <td>{{ attribute.UpdatedOn | relativeTime }}</td>
                               <!-- value | pipe name -->
+              <td>
+                <a [routerLink]="['/edit-attribute', attribute.AttributeId]">Edit</a>
+              </td>
+           
             </tr>
           } @empty {
             <tr>
-              <td colspan="7">No attributes found.</td>
+              <td colspan="7">No attributes found</td>
             </tr>
           }
         </tbody>

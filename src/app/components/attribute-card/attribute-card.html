@@ -16,7 +16,7 @@
   <p><strong>Business Unit:</strong> {{ attribute.BusinessUnitName }}</p>
   <p><strong>Customer Location:</strong> {{ attribute.CustomerLocationName }}</p>
   <p><strong>Company:</strong> {{ attribute.CompanyName }}</p>
-  <p><strong>Created On:</strong> {{ attribute.CreatedOn | relativeTime}}</p>
-  
+  <p><strong>Created On:</strong> {{ attribute.CreatedOn | relativeTime}}</p>  
   <p><strong>Updated On:</strong> {{ attribute.UpdatedOn | relativeTime}}</p>
-  </article>
+  <a [routerLink]="['/edit-attribute', attribute.AttributeId]">Edit</a>
+</article>

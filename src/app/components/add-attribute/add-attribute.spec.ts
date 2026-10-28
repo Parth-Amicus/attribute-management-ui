@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { AddAttribute } from './add-attribute';
+import { AddAttributeComponent } from './add-attribute';
 
 describe('AddAttribute', () => {
-  let component: AddAttribute;
-  let fixture: ComponentFixture<AddAttribute>;
+  let component: AddAttributeComponent;
+  let fixture: ComponentFixture<AddAttributeComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AddAttribute],
+      imports: [AddAttributeComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(AddAttribute);
+    fixture = TestBed.createComponent(AddAttributeComponent);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

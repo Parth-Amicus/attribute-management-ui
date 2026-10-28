@@ -1,0 +1,151 @@
+
+<section class="form-page">
+  <h1>Edit Attribute</h1>
+  <p class="subtitle">Update the attribute details below.</p>
+
+  <form
+    #editForm="ngForm"
+    (ngSubmit)="onSubmit(editForm)"
+    novalidate
+  >
+    <div class="form-field">
+      <label for="attributeName">Attribute Name *</label>
+
+      <input
+        id="attributeName"
+        type="text"
+        name="attributeName"
+        [(ngModel)]="model.AttributeName"
+        #nameControl="ngModel"
+        required
+        minlength="3"
+        pattern="[a-zA-Z0-9 -]+"
+        [class.invalid]="nameControl.invalid &&
+          (nameControl.touched || submitted)"
+      />
+
+      @if (nameControl.invalid && (nameControl.touched || submitted)) {
+        <div class="error-message">
+          @if (nameControl.errors?.['required']) {
+            <p>Attribute name is required.</p>
+          }
+
+          @if (nameControl.errors?.['minlength']) {
+            <p>Attribute name must contain at least 3 characters.</p>
+          }
+
+          @if (nameControl.errors?.['pattern']) {
+            <p>Only letters, numbers, spaces, and hyphens are allowed.</p>
+          }
+        </div>
+      }
+    </div>
+
+    <div class="form-field">
+      <label for="businessUnit">Business Unit *</label>
+
+      <select
+        id="businessUnit"
+        name="businessUnit"
+        [(ngModel)]="selectedBusinessId"
+        (ngModelChange)="onBusinessUnitChange($event)"
+        #businessControl="ngModel"
+        required
+        [class.invalid]="businessControl.invalid &&
+          (businessControl.touched || submitted)"
+      >
+        <option [ngValue]="null">Select a business unit</option>
+
+        @for (unit of businessUnits; track unit.BusinessId) {
+          <option [ngValue]="unit.BusinessId">
+            {{ unit.BusinessName }}
+          </option>
+        }
+      </select>
+
+      @if (businessControl.invalid &&
+          (businessControl.touched || submitted)) {
+        <p class="error-message">Please select a business unit.</p>
+      }
+    </div>
+
+    <div class="form-field">
+      <label for="customerLocation">Customer Location *</label>
+
+      <select
+        id="customerLocation"
+        name="customerLocation"
+        [(ngModel)]="selectedCustomerLocationId"
+        #locationControl="ngModel"
+        required
+        [disabled]="selectedBusinessId === null"
+        [class.invalid]="locationControl.invalid &&
+          (locationControl.touched || submitted)"
+      >
+        <option [ngValue]="null">Select a customer location</option>
+
+        @for (location of customerLocations;
+             track location.CustomerLocationId) {
+          <option [ngValue]="location.CustomerLocationId">
+            {{ location.CustomerLocationName }}
+          </option>
+        }
+      </select>
+
+      @if (locationControl.invalid &&
+          (locationControl.touched || submitted)) {
+        <p class="error-message">Please select a customer location.</p>
+      }
+    </div>
+
+    <div class="form-field">
+      <label for="company">Company *</label>
+
+      <select
+        id="company"
+        name="company"
+        [(ngModel)]="selectedCompanyId"
+        #companyControl="ngModel"
+        required
+        [class.invalid]="companyControl.invalid &&
+          (companyControl.touched || submitted)"
+      >
+        <option [ngValue]="null">Select a company</option>
+
+        @for (company of companies; track company.CompanyId) {
+          <option [ngValue]="company.CompanyId">
+            {{ company.CompanyName }}
+          </option>
+        }
+      </select>
+
+      @if (companyControl.invalid &&
+          (companyControl.touched || submitted)) {
+        <p class="error-message">Please select a company.</p>
+      }
+    </div>
+
+    <div class="form-field checkbox-field">
+      <label for="isActive">Active</label>
+
+      <input
+        id="isActive"
+        type="checkbox"
+        name="isActive"
+        [(ngModel)]="model.IsActive"
+      />
+    </div>
+
+    <div class="form-actions">
+      <button
+        type="submit"
+        [disabled]="editForm.invalid"
+        [title]="editForm.invalid ? 'Please correct the form errors first.' : 'Save changes'"
+      >
+        Save Changes
+      </button>
+
+      <a routerLink="/">Cancel</a>
+    </div>
+  </form>
+</section>

@@ -116,3 +116,22 @@ It is reused in both the table and card views
 - A filtering pipe normally returns a filtered array, leaving the template to render the results. This assignment specifically asks us to practice a structural directive, so our directive controls whether each row or card is rendered.
 
 - In a real application, a pipe or a filtering method may be more suitable when transforming collections for display, particularly if we want the filtered collection itself for pagination, counts, or other calculations.
+
+
+
+## Reactive Forms vs Template-Driven Forms
+
+### Reactive Forms — Add Attribute
+- Form controls and validators are defined in the TypeScript class.
+- The form structure is explicit and easier to manage programmatically.
+- Suitable for complex forms, dependent fields, and dynamic validation.
+- Generally easier to unit test because the form model and validators can be tested directly.
+
+### Template-Driven Forms — Edit Attribute
+- The form structure and validation rules are mainly defined in the HTML template.
+- Uses `[(ngModel)]` to connect fields with TypeScript properties.
+- Suitable for simple forms with straightforward validation.
+- Complex form logic can be harder to test because it depends more on template behavior.
+
+### Which should we choose?
+For a small form, template-driven forms can require less setup. For complex forms with many controls, dynamic fields, or cross-field validation, reactive forms usually provide better control and testability.

@@ -4,11 +4,11 @@ import { DatePipe } from '@angular/common';
 import { IAttribute } from '../../interface/attribute.interface';
 import { ActiveStatusDirective } from '../../directives/active-status';
 import { RelativeTimePipe } from '../../pipes/relative-time-pipe';
-
+import { RouterLink } from '@angular/router';
 @Component({
   selector: 'app-attribute-card',
   standalone: true,
-  imports: [DatePipe,ActiveStatusDirective,RelativeTimePipe],
+  imports: [RouterLink,DatePipe,ActiveStatusDirective,RelativeTimePipe],
   templateUrl: './attribute-card.html',
   styleUrl: './attribute-card.css'
 })

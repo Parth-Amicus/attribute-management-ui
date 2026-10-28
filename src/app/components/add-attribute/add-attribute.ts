@@ -16,7 +16,7 @@ import { attributeNameValidator } from '../../validator/attribute-name.validator
 @Component({
   selector: 'app-add-attribute',
   standalone: true,
-  imports: [RouterLink,ReactiveFormsModule],
+  imports: [RouterLink,ReactiveFormsModule], //router link helps to navigate to diff url
   templateUrl: './add-attribute.html',
   styleUrl: './add-attribute.css'
 })
