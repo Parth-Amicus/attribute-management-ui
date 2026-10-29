@@ -1,1 +1,44 @@
-/* You can add global styles to this file, and also import other style files */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-width: 320px;
+  background: #f5f6f4;
+  color: #263233;
+  font-family:
+    Inter, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  font-size: 15px;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  min-width: 320px;
+  min-height: 100vh;
+  margin: 0;
+  background: #f5f6f4;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+button,
+a,
+input,
+select {
+  -webkit-tap-highlight-color: transparent;
+}
+
+::selection {
+  color: #203d37;
+  background: #dce9e4;
+}
+
+:focus-visible {
+  outline: 3px solid rgb(58 121 105 / 35%);
+  outline-offset: 2px;
+}
