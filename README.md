@@ -135,3 +135,37 @@ It is reused in both the table and card views
 
 ### Which should we choose?
 For a small form, template-driven forms can require less setup. For complex forms with many controls, dynamic fields, or cross-field validation, reactive forms usually provide better control and testability.
+
+
+
+## Assignment 2 
+
+### Architecture
+
+- Core: Application-wide services, guards, interceptors and resolvers.
+- Shared: Reusable components, directives, pipes and utilities.
+- Features: Business-specific functionality grouped into feature folders.
+
+### Why use this architecture?
+
+It separates application infrastructure, reusable functionality and business features. This makes the project easier to maintain, understand and extend.
+
+### Why not use NgModules?
+
+Modern Angular supports standalone components and standalone route configurations. These allow us to organize and lazy-load features without traditional NgModules.
+
+### Core vs Shared
+
+Core contains application-wide infrastructure and singleton services.
+
+Shared contains reusable UI functionality that can be used by multiple features.
+
+Core functionality should have a single application-wide scope, whereas shared functionality can be reused wherever needed.
+
+### What happens if you import core module inside lazr-loaded module?
+
+Importing CoreModule into a lazy-loaded module can create duplicate service instances because lazy-loaded modules have their own child injectors. This can lead to separate 
+
+service states and inconsistent data. CoreModule should be imported only once at the root level. In modern standalone Angular applications, application-wide services can use 
+
+providedIn: 'root' instead, avoiding the need for CoreModule.

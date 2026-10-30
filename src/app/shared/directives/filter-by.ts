@@ -1,7 +1,7 @@
 
 import {Directive,Input,OnChanges,TemplateRef,ViewContainerRef} from '@angular/core';
 
-import { IAttribute } from '../interface/attribute.interface';
+import { IAttribute } from '../../interface/attribute.interface';
 
 interface FilterByContext {
   item: IAttribute;

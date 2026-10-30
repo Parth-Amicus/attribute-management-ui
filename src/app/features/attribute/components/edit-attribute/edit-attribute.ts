@@ -3,13 +3,13 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
-import { AttributeService } from '../../services/attribute';
-import { LookupService } from '../../services/lookup';
+import { AttributeService } from '../../../../core/services/attribute';
+import { LookupService } from '../../../../core/services/lookup';
 
-import { IAttribute } from '../../interface/attribute.interface';
-import { IBusinessUnit } from '../../interface/business-unit.interface';
-import { ICustomerLocation } from '../../interface/customer-location.interface';
-import { ICompany } from '../../interface/company.interface';
+import { IAttribute } from '../../../../interface/attribute.interface';
+import { IBusinessUnit } from '../../../../interface/business-unit.interface';
+import { ICustomerLocation } from '../../../../interface/customer-location.interface';
+import { ICompany } from '../../../../interface/company.interface';
 
 @Component({
   selector: 'app-edit-attribute', //selector identifies this component in HTML

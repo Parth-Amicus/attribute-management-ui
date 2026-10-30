@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
-import { AttributeListComponent } from './components/attribute-list/attribute-list';
-import { AddAttributeComponent} from './components/add-attribute/add-attribute';
-import { EditAttributeComponent } from './components/edit-attribute/edit-attribute';
+import { AttributeListComponent } from './features/attribute/components/attribute-list/attribute-list';
+import { AddAttributeComponent} from './features/attribute/components/add-attribute/add-attribute';
+import { EditAttributeComponent } from './features/attribute/components/edit-attribute/edit-attribute';
 import { unsavedChangesGuard } from './guards/unsaved-changes-guard';
 
 //WORKS ON FIRST MATCH

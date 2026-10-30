@@ -1,8 +1,8 @@
 
 import { Injectable } from '@angular/core';
-import { IBusinessUnit } from '../interface/business-unit.interface';
-import { ICustomerLocation } from '../interface/customer-location.interface';
-import { ICompany } from '../interface/company.interface';
+import { IBusinessUnit } from '../../interface/business-unit.interface';
+import { ICustomerLocation } from '../../interface/customer-location.interface';
+import { ICompany } from '../../interface/company.interface';
 
 // Internal type: associates each location with a business unit.
 // BusinessId is used for filtering but is not part of ICustomerLocation.

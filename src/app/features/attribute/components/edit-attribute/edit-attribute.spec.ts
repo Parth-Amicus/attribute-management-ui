@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { EditAttribute } from './edit-attribute';
+import { EditAttributeComponent as EditAttribute } from './edit-attribute';
 
 describe('EditAttribute', () => {
   let component: EditAttribute;

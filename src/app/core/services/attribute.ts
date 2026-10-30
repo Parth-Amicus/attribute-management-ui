@@ -1,6 +1,6 @@
 
 import { Injectable } from '@angular/core';
-import { IAttribute } from '../interface/attribute.interface';
+import { IAttribute } from '../../interface/attribute.interface';
 
 @Injectable({
   providedIn: 'root'

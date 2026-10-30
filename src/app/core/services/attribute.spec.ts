@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { Attribute } from './attribute';
+import { AttributeService as Attribute } from './attribute';
 
 describe('Attribute', () => {
   let service: Attribute;

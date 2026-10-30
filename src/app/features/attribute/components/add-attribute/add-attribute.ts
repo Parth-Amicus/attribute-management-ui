@@ -5,13 +5,13 @@ import {AbstractControl,FormControl,FormGroup,ReactiveFormsModule,Validators
 import { Router, RouterLink } from '@angular/router';
 import { Subscription } from 'rxjs';
 
-import { AttributeService } from '../../services/attribute';
-import { LookupService } from '../../services/lookup';
-import { IAttribute } from '../../interface/attribute.interface';
-import { IBusinessUnit } from '../../interface/business-unit.interface';
-import { ICustomerLocation } from '../../interface/customer-location.interface';
-import { ICompany } from '../../interface/company.interface';
-import { attributeNameValidator } from '../../validator/attribute-name.validator';
+import { AttributeService } from '../../../../core/services/attribute';
+import { LookupService } from '../../../../core/services/lookup';
+import { IAttribute } from '../../../../interface/attribute.interface';
+import { IBusinessUnit } from '../../../../interface/business-unit.interface';
+import { ICustomerLocation } from '../../../../interface/customer-location.interface';
+import { ICompany } from '../../../../interface/company.interface';
+import { attributeNameValidator } from '../../../../validator/attribute-name.validator';
 
 @Component({
   selector: 'app-add-attribute',

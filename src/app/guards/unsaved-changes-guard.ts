@@ -1,6 +1,6 @@
 
 import { CanDeactivateFn } from '@angular/router';  //CanDeactivateFn	Decides whether a user can leave a route
-import { EditAttributeComponent } from '../components/edit-attribute/edit-attribute';
+import { EditAttributeComponent } from '../features/attribute/components/edit-attribute/edit-attribute';
 
 export const unsavedChangesGuard: CanDeactivateFn<EditAttributeComponent> =
   component => component.canDeactivate();

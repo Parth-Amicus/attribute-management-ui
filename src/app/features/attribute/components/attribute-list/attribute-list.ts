@@ -1,13 +1,12 @@
 
 import { Component, OnInit } from '@angular/core';
-import { DatePipe } from '@angular/common';
-import { AttributeService } from '../../services/attribute';
-import { IAttribute } from '../../interface/attribute.interface';
+import { AttributeService } from '../../../../core/services/attribute';
+import { IAttribute } from '../../../../interface/attribute.interface';
 import { AttributeCardComponent } from '../attribute-card/attribute-card';
-import { ActiveStatusDirective } from '../../directives/active-status';
-import { RelativeTimePipe } from '../../pipes/relative-time-pipe';
+import { ActiveStatusDirective } from '../../../../shared/directives/active-status';
+import { RelativeTimePipe } from '../../../../shared/pipes/relative-time-pipe';
 import { FormsModule } from '@angular/forms';
-import { FilterByDirective } from '../../directives/filter-by';
+import { FilterByDirective } from '../../../../shared/directives/filter-by';
 import { RouterLink } from '@angular/router'; //lets user to navigate to different url - used in html
 @Component({
   selector: 'app-attribute-list',
