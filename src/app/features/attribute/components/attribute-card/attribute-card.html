@@ -18,5 +18,5 @@
   <p><strong>Company:</strong> {{ attribute.CompanyName }}</p>
   <p><strong>Created On:</strong> {{ attribute.CreatedOn | relativeTime}}</p>  
   <p><strong>Updated On:</strong> {{ attribute.UpdatedOn | relativeTime}}</p>
-  <a [routerLink]="['/edit-attribute', attribute.AttributeId]">Edit</a>
+ <a [routerLink]="['/attributes', attribute.AttributeId, 'edit']">Edit</a>
 </article>

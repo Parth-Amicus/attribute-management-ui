@@ -169,3 +169,16 @@ Importing CoreModule into a lazy-loaded module can create duplicate service inst
 service states and inconsistent data. CoreModule should be imported only once at the root level. In modern standalone Angular applications, application-wide services can use 
 
 providedIn: 'root' instead, avoiding the need for CoreModule.
+
+## Lazy Loading Verification
+
+The Attribute feature uses loadChildren() with dynamic import() to load its
+route configuration only when the user navigates to /attributes.
+
+### Network Tab Observation
+
+The browser Network tab shows an additional JavaScript chunk associated
+with the Attribute feature. This demonstrates that the feature is loaded
+separately rather than being statically imported into the root application.
+
+Screenshot: screenshots/attribute-lazy-loading.png

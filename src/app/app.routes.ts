@@ -1,15 +1,30 @@
+
 import { Routes } from '@angular/router';
-import { AttributeListComponent } from './features/attribute/components/attribute-list/attribute-list';
-import { AddAttributeComponent} from './features/attribute/components/add-attribute/add-attribute';
-import { EditAttributeComponent } from './features/attribute/components/edit-attribute/edit-attribute';
-import { unsavedChangesGuard } from './guards/unsaved-changes-guard';
 
-//WORKS ON FIRST MATCH
+import { DashboardComponent } from './features/dashboard/dashboard';
+import { PageNotFoundComponent } from './shared/components/page-not-found/page-not-found';
 
+
+//Works on first match
 export const routes: Routes = [
-  { path: '', component: AttributeListComponent }, // no additional path after the domain
-  { path: 'add-attribute', component: AddAttributeComponent },
-  { path: 'edit-attribute/:id',component: EditAttributeComponent,canDeactivate:[unsavedChangesGuard]}, //id is route parameter
-
-  { path: '**', redirectTo: '' }, // if any other redirect to default
-  ];
+  {
+    path: '',
+    redirectTo: 'attributes',
+    pathMatch: 'full'
+  },
+  {
+    path: 'attributes',
+    loadChildren: () =>
+      //Angular loads these files when the user visits /attributes
+      import('./features/attribute/attribute.routes')
+        .then(module => module.ATTRIBUTE_ROUTES)
+  },
+  {
+    path: 'dashboard',
+    component: DashboardComponent
+  },
+  {
+    path: '**',
+    component: PageNotFoundComponent
+  }
+];

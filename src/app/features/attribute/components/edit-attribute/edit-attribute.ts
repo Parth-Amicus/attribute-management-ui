@@ -60,14 +60,14 @@ export class EditAttributeComponent implements OnInit {
     const attributeId = Number(idParameter);
 
     if (!idParameter || !Number.isInteger(attributeId) || attributeId <= 0) {
-      void this.router.navigate(['/']);
+      void this.router.navigate(['/attributes']);
       return;
     }
 
     const existingAttribute =this.attributeService.getAttributeById(attributeId);
 
     if (!existingAttribute) {
-      void this.router.navigate(['/']);
+      void this.router.navigate(['/attributes']);
       return;
     }
 

@@ -156,7 +156,7 @@ export class AddAttributeComponent implements OnInit, OnDestroy {
     this.attributeService.addAttribute(newAttribute);
 
     // Return to the list after adding the record.
-    void this.router.navigate(['/']);
+   void this.router.navigate(['/attributes']);
   }
 
   ngOnDestroy(): void {
