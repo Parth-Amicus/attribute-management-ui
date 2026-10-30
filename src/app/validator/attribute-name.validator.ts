@@ -4,7 +4,7 @@ import { AbstractControl, ValidationErrors } from '@angular/forms';
 // validation error used for object containg validation error
 
 export function attributeNameValidator(
-  control: AbstractControl // received form control
+  control: AbstractControl // received from  formcontrol
 ): ValidationErrors | null {
   const value = String(control.value ?? '');
 

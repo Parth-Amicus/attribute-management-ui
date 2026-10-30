@@ -4,7 +4,7 @@ import { AttributeListComponent } from './components/attribute-list/attribute-li
 
 @Component({
   imports: [RouterOutlet, AttributeListComponent], //route outlet so that app.html can use 
-  selector: 'app-root',
+  selector: 'app-root', //It tells Angular that this component should be rendered wherever it finds the <app-root> element
   styleUrl: './app.css',
   templateUrl: './app.html',
   standalone: true,

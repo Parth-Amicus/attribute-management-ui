@@ -13,7 +13,7 @@ import { RouterLink } from '@angular/router';
   styleUrl: './attribute-card.css'
 })
 export class AttributeCardComponent {
-  @Input({ required: true }) attribute!: IAttribute;
+  @Input({ required: true }) attribute!: IAttribute; // ! ensures that this value is not going to be null so let angular access it 
   // angular performs an assignment conceptually like this.attribute = attri
 
   //runs when angular initializes the component 
