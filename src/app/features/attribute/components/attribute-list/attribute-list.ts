@@ -27,6 +27,7 @@ export class AttributeListComponent implements OnInit {
 
   constructor(private attributeService: AttributeService) {} // provides service instance
 
+  
   ngOnInit(): void {
     this.attributes = this.attributeService.getAttributes(); // using service instance and method 
   } // runs when coponents are initialized
