@@ -150,14 +150,15 @@ export class EditAttributeComponent implements OnInit {
     void this.router.navigate(['/']);
   }
 
+
   canDeactivate(): boolean {
-    if (!this.editForm?.dirty) {
-      return true;
+    if (this.editForm?.dirty) {
+      return confirm(
+        'You have unsaved changes. Are you sure you want to leave this page?'
+      );
     }
 
-    return window.confirm(
-      'You have unsaved changes do you want to leave this page?'
-    );
+    return true;
   }
 }
 

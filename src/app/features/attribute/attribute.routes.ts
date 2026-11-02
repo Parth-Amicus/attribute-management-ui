@@ -5,6 +5,7 @@ import { AttributeListComponent } from './components/attribute-list/attribute-li
 import { AddAttributeComponent } from './components/add-attribute/add-attribute';
 import { EditAttributeComponent } from './components/edit-attribute/edit-attribute';
 import { authGuard } from '../../core/guards/auth.guard';
+import { unsavedChangesGuard } from '../../guards/unsaved-changes-guard';
 
 export const ATTRIBUTE_ROUTES: Routes = [
   {
@@ -19,6 +20,7 @@ export const ATTRIBUTE_ROUTES: Routes = [
   {
     path: ':id/edit',
     component: EditAttributeComponent,
-    canActivate : [authGuard]
+    canActivate : [authGuard],
+    canDeactivate : [unsavedChangesGuard]
   }
 ];
