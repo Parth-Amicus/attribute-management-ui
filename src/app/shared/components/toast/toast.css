@@ -1,0 +1,35 @@
+.toast {
+  position: fixed;
+  top: 20px;
+  left: 50%;                  /* Moves the left edge to the exact middle of the screen */
+  transform: translateX(-50%); /* Shifts the toast back left by half its own width */
+  padding: 12px 16px;          /* Adjusted padding for better horizontal balance */
+  background-color: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fca5a5;
+  border-radius: 6px;
+  z-index: 1000;
+  
+  /* Alignment Fixes */
+  display: flex;
+  align-items: center;         /* Vertically centers text and button */
+  justify-content: space-between; /* Pushes button to the far right */
+  gap: 16px;                   /* Ensures text never overlaps the button */
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); /* Adds depth */
+}
+
+.toast-close-btn {
+  background: transparent;
+  border: none;
+  color: #c92a2a;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  transition: background-color 0.2s;
+}
+
+.toast-close-btn:hover {
+  background-color: #fecaca;   /* Subtle background feedback on hover */
+}

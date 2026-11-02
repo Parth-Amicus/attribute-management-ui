@@ -1,0 +1,8 @@
+@if (toastService.message()) {
+  <div class="toast">
+    <span>{{ toastService.message() }}</span>
+    <button type="button" class="toast-close-btn" (click)="toastService.clear()">
+      Close
+    </button>
+  </div>
+}

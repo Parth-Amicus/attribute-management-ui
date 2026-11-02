@@ -50,28 +50,72 @@ export class EditAttributeComponent implements OnInit {
     private router: Router,
     private attributeService: AttributeService,
     private lookupService: LookupService
-  ) {}
+  ) { }
 
-  ngOnInit(): void { //loading the initial data 
+  // ngOnInit(): void { //loading the initial data 
+
+  //    const attribute = this.route.snapshot.data['attribute'] as IAttribute;
+  //   this.businessUnits = this.lookupService.getBusinessUnits();
+  //   this.companies = this.lookupService.getCompanies();
+
+  //   const idParameter = this.route.snapshot.paramMap.get('id');
+  //   const attributeId = Number(idParameter);
+
+  //   if (!idParameter || !Number.isInteger(attributeId) || attributeId <= 0) {
+  //     void this.router.navigate(['/attributes']);
+  //     return;
+  //   }
+
+  //   const existingAttribute =this.attributeService.getAttributeById(attributeId);
+
+  //   if (!existingAttribute) {
+  //     void this.router.navigate(['/attributes']);
+  //     return;
+  //   }
+
+  //   // Copy the record so typing does not immediately change the stored record
+  //   this.model = {
+  //     ...existingAttribute,
+  //     CreatedOn: new Date(existingAttribute.CreatedOn),
+  //     UpdatedOn: new Date(existingAttribute.UpdatedOn)
+  //   };
+
+  //   // Convert the saved names back to lookup IDs for the dropdowns
+  //   const businessUnit = this.businessUnits.find(
+  //     item => item.BusinessName === this.model.BusinessUnitName
+  //   );
+
+  //   this.selectedBusinessId = businessUnit?.BusinessId ?? null;
+
+  //   if (this.selectedBusinessId !== null) {
+  //     this.customerLocations =this.lookupService.getCustomerLocations(this.selectedBusinessId);
+
+  //     const location = this.customerLocations.find(
+  //       item =>
+  //         item.CustomerLocationName === this.model.CustomerLocationName
+  //     );
+
+  //     this.selectedCustomerLocationId =
+  //       location?.CustomerLocationId ?? null;
+  //   }
+
+  //   const company = this.companies.find(
+  //     item => item.CompanyName === this.model.CompanyName
+  //   );
+
+  //   this.selectedCompanyId = company?.CompanyId ?? null;
+  // }
+
+
+  ngOnInit(): void {
+
+    // Get the attribute already fetched by the Resolver
+    const existingAttribute = this.route.snapshot.data['attribute'] as IAttribute;
+
     this.businessUnits = this.lookupService.getBusinessUnits();
     this.companies = this.lookupService.getCompanies();
 
-    const idParameter = this.route.snapshot.paramMap.get('id');
-    const attributeId = Number(idParameter);
-
-    if (!idParameter || !Number.isInteger(attributeId) || attributeId <= 0) {
-      void this.router.navigate(['/attributes']);
-      return;
-    }
-
-    const existingAttribute =this.attributeService.getAttributeById(attributeId);
-
-    if (!existingAttribute) {
-      void this.router.navigate(['/attributes']);
-      return;
-    }
-
-    // Copy the record so typing does not immediately change the stored record
+    // Copy the resolved record so typing does not immediately change stored data
     this.model = {
       ...existingAttribute,
       CreatedOn: new Date(existingAttribute.CreatedOn),
@@ -86,7 +130,8 @@ export class EditAttributeComponent implements OnInit {
     this.selectedBusinessId = businessUnit?.BusinessId ?? null;
 
     if (this.selectedBusinessId !== null) {
-      this.customerLocations =this.lookupService.getCustomerLocations(this.selectedBusinessId);
+      this.customerLocations =
+        this.lookupService.getCustomerLocations(this.selectedBusinessId);
 
       const location = this.customerLocations.find(
         item =>
@@ -104,8 +149,9 @@ export class EditAttributeComponent implements OnInit {
     this.selectedCompanyId = company?.CompanyId ?? null;
   }
 
+
   onBusinessUnitChange(businessId: number | null): void {
-    this.customerLocations = businessId === null? []: this.lookupService.getCustomerLocations(businessId);
+    this.customerLocations = businessId === null ? [] : this.lookupService.getCustomerLocations(businessId);
 
     // A location selected for the previous business unit is no longer valid
     this.selectedCustomerLocationId = null;
@@ -141,13 +187,13 @@ export class EditAttributeComponent implements OnInit {
     this.model.CompanyName = company.CompanyName;
     this.model.UpdatedOn = new Date();
     this.model.UpdatedBy = 'Current User';
- //updated values
+    //updated values
     this.attributeService.updateAttribute(this.model);
 
     // Prevent the unsaved-changes guard from warning after a successful save.
     form.form.markAsPristine();
 
-    void this.router.navigate(['/']);
+    void this.router.navigate(['/attributes']);
   }
 
 
