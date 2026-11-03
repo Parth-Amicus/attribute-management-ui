@@ -252,3 +252,9 @@ Mutation requests can be retried safely when the API supports mechanisms such as
 **Observation:** A component subscribing after a value had been emitted did not receive that previous value.
 
 **Solution:** Replaced `Subject` with `BehaviorSubject`, which stores and emits its latest value to new subscribers.
+
+### Why immutability? What breaks if you mutate?"
+
+Immutability creates new object/array references instead of modifying existing state.
+This helps Angular change detection and RxJS detect updates, prevents stale UI,
+and makes state changes easier to track and debug.
