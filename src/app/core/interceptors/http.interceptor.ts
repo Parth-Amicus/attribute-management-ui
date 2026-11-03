@@ -2,7 +2,7 @@ import { HttpInterceptorFn, HttpRequest } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastService } from '../services/toast';
-import { catchError, finalize, throwError } from 'rxjs';
+import { catchError, finalize, retry, throwError, timer } from 'rxjs';
 
 export const httpInterceptor: HttpInterceptorFn = (req, next) => { //req is the outgoing http req and next is the next interceptor in the chain or the backend if there are no more interceptors
 
@@ -24,30 +24,33 @@ export const httpInterceptor: HttpInterceptorFn = (req, next) => { //req is the 
 
   console.log(`Request Started: ${req.method} ${req.urlWithParams}`);
   console.log(`X-Request-Id: ${requestId}`);
-  return next(modifiedRequest).pipe(
+  const response = next(modifiedRequest);
 
-    // Handle errors returned by the API.
-    catchError(error => {
+  // Retry only GET requests, maximum 2 times, with a 1-second delay
+  const retriedResponse = req.method === 'GET'? response.pipe(retry({count: 2,delay: () => timer(1000)})): response;
 
-      if (error.status === 401) {
-        toastService.show('Your session has expired. Please log in again');
-        void router.navigate(['/login']);
-      }
+  return retriedResponse.pipe(
 
-      if (error.status === 500) {
-        toastService.show('Something went wrong on the server. Please try again later');
-      }
+  catchError(error => {
 
-      return throwError(() => error);
-    }),
+    if (error.status === 401) {
+      toastService.show('Your session has expired. Please log in again.');
+      void router.navigate(['/login']);
+    }
 
-    // Runs when the request completes, errors, or is cancelled
-    finalize(() => {
-      const duration = Date.now() - startTime;
+    if (error.status === 500) {
+      toastService.show('Something went wrong on the server. Please try again later.');
+    }
 
-      console.log(
-        `Request Completed: ${req.method} ${req.urlWithParams} - ${duration}ms`
-      );
-    })
-  );
+    return throwError(() => error);
+  }),
+
+  finalize(() => {
+    const duration = Date.now() - startTime;
+
+    console.log(
+      `Request Completed: ${req.method} ${req.urlWithParams} - ${duration}ms`
+    );
+  })
+);
 };

@@ -208,3 +208,14 @@ For example:
 
 - The execution order is controlled by the order of interceptors passed in provideHttpClient().
 Changing their position in the array changes their execution order.
+
+
+### Why not automatically retry mutation requests
+
+Mutation requests (POST, PUT, PATCH, DELETE) modify server-side data. Automatically retrying them can cause duplicate records or unintended changes, especially when the backend successfully processes a request but the response is lost.
+
+For example, retrying a POST request could create the same attribute twice.
+
+GET requests are generally safe to retry because they do not modify server data.
+
+Mutation requests can be retried safely when the API supports mechanisms such as idempotency keys, deduplication, or other guarantees that prevent duplicate side effects.
