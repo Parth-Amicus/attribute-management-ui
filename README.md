@@ -227,3 +227,28 @@ Mutation requests can be retried safely when the API supports mechanisms such as
 - distinctUntilChanged(): Prevents consecutive duplicate search values from triggering repeated requests.
 
 - switchMap(): Cancels the previous inner Observable subscription when a new search begins and switches to the latest request. Without it, older API responses could arrive after newer responses and overwrite the latest search results, causing a race condition.
+
+
+### Bug A: Memory Leak
+
+**Cause:** A subscription was created without unsubscribing when the component was destroyed.
+
+**Observation:** After navigating away from the component, the interval continued logging. Repeated navigation created additional active subscriptions.
+
+**Solution:** Used Angular's `takeUntilDestroyed()` operator to automatically unsubscribe when the component is destroyed.
+
+### Bug B: Incorrect Search Results
+
+**Cause:** Used `mergeMap()` instead of `switchMap()` for search requests.
+
+**Observation:** Multiple search requests remained active. An older response could overwrite the results from a newer search.
+
+**Solution:** Replaced `mergeMap()` with `switchMap()`, which cancels the previous inner subscription when a new search term arrives.
+
+### Bug C: Missing Initial State
+
+**Cause:** Used `Subject` instead of `BehaviorSubject`.
+
+**Observation:** A component subscribing after a value had been emitted did not receive that previous value.
+
+**Solution:** Replaced `Subject` with `BehaviorSubject`, which stores and emits its latest value to new subscribers.
