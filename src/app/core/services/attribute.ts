@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
 
 import { IAttribute } from '../../interface/attribute.interface';
@@ -81,4 +81,21 @@ export class AttributeService {
   deleteAttribute(id: number|string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
-}
+
+  searchAttributes(searchTerm: string): Observable<IAttribute[]> {
+    const term = searchTerm.trim();
+    if (!term) {
+      return this.getAttributes();
+    }
+
+    const params = new HttpParams().set('attribute_name:contains', term);
+
+    return this.http.get<AttributeDTO[]>(this.apiUrl, { params }).pipe(
+      map(attributes =>
+        attributes.map(attribute =>
+          this.mappingService.toAttribute(attribute)
+        )
+      )
+    );
+  }//The inner map() loops through every DTO in the array and converts it into an IAttribute whereas the outer map() wraps the entire array of converted IAttributes into an Observable that can be subscribed to by the component
+} 

@@ -164,6 +164,20 @@ td a:hover,
   box-shadow: 0 0 0 3px rgb(58 121 105 / 12%);
 }
 
+.search-status,
+.search-error {
+  margin: 0;
+  font-size: 0.86rem;
+}
+
+.search-status {
+  color: #64716b;
+}
+
+.search-error {
+  color: #a12622;
+}
+
 .add-attribute-link {
   display: inline-flex;
   align-items: center;

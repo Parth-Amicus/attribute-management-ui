@@ -15,11 +15,17 @@
 
   <input
     id="attribute-search"
-    type="search"
-    /* connecting the search term property in component */
-    [(ngModel)]="searchTerm"
-    placeholder="Search by attribute name or business unit"
+    type="text"
+    [value]="searchControl.value"
+    (input)="onSearchInput($any($event.target).value)"
+    placeholder="Search attributes"
   />
+
+  @if (isSearching) {
+    <p class="search-status" role="status">Searching...</p>
+  } @else if (searchError) {
+    <p class="search-error" role="alert">{{ searchError }}</p>
+  }
 </div>
 
 
@@ -63,7 +69,7 @@
 
         <tbody>
           @for (attribute of attributes; track attribute.AttributeId) {
-            <tr  *appFilterBy="{ item: attribute, term: searchTerm }">
+            <tr>
               <!-- {{}}interpolation - display ts value in html -->
               <td>{{ attribute.AttributeId }}</td>
               <td>{{ attribute.AttributeName }}</td>
@@ -93,7 +99,7 @@
   } @else {
     <div class="card-grid">
       @for (attri of attributes; track attri.AttributeId) {
-        <app-attribute-card   *appFilterBy="{ item: attri, term: searchTerm }" [attribute]="attri" />
+        <app-attribute-card [attribute]="attri" />
         <!-- [attribute] on the left refers to an input property on AttributeCardComponent -->
         } @empty {
         <p>No attributes found</p>

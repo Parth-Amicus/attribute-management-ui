@@ -219,3 +219,11 @@ For example, retrying a POST request could create the same attribute twice.
 GET requests are generally safe to retry because they do not modify server data.
 
 Mutation requests can be retried safely when the API supports mechanisms such as idempotency keys, deduplication, or other guarantees that prevent duplicate side effects.
+
+### Why debounceTime, distinctUntilChanged and switchMap?
+
+- debounceTime(300): Waits until the user stops typing for 300 milliseconds before triggering a search. This reduces unnecessary API calls and backend workload.
+
+- distinctUntilChanged(): Prevents consecutive duplicate search values from triggering repeated requests.
+
+- switchMap(): Cancels the previous inner Observable subscription when a new search begins and switches to the latest request. Without it, older API responses could arrive after newer responses and overwrite the latest search results, causing a race condition.
