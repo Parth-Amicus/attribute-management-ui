@@ -195,3 +195,16 @@ the generated page and require a rebuild to reflect changes in `db.json`.
 - Consistent property names in components.
 - Centralized conversion logic.
 - Easier maintenance when the backend structure changes.
+
+### Interceptors order of execution
+
+- If an application has three HTTP interceptors, they execute in the order in which they are registered.
+For example:
+
+`AuthInterceptor → LoggingInterceptor → ErrorInterceptor`
+
+- Outgoing requests: Execute in registration order.
+- Incoming responses: Execute in reverse order.
+
+- The execution order is controlled by the order of interceptors passed in provideHttpClient().
+Changing their position in the array changes their execution order.
