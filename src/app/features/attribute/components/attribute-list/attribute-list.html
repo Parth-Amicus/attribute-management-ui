@@ -1,40 +1,35 @@
 
 <section class="page">
-  <div class = "page-head">
-      <h1>Attribute Management</h1> 
-   <a class="add-attribute-link" routerLink="/attributes/add"> Add Attribute</a>
+  <div class="page-head">
+    <h1>Attribute Management</h1>
+    <a class="add-attribute-link" routerLink="/attributes/add">Add Attribute</a>
   </div>
-
 
   <!-- <p class="subtitle">View and manage your attributes</p> -->
 
+  <div class="search-container">
+    <label for="attribute-search">Search attributes</label>
 
-  
-<div class="search-container">
-  <label for="attribute-search">Search attributes</label>
+    <input
+      id="attribute-search"
+      type="text"
+      [value]="searchControl.value"
+      (input)="onSearchInput($any($event.target).value)"
+      placeholder="Search attributes"
+    />
 
-  <input
-    id="attribute-search"
-    type="text"
-    [value]="searchControl.value"
-    (input)="onSearchInput($any($event.target).value)"
-    placeholder="Search attributes"
-  />
-
-  @if (isSearching) {
-    <p class="search-status" role="status">Searching...</p>
-  } @else if (searchError) {
-    <p class="search-error" role="alert">{{ searchError }}</p>
-  }
-</div>
-
+    @if (isSearching) {
+      <p class="search-status" role="status">Searching...</p>
+    } @else if (searchError) {
+      <p class="search-error" role="alert">{{ searchError }}</p>
+    }
+  </div>
 
   <div class="view-toggle">
     <button
       type="button"
       /* property binding */
-      [class.selected]="viewMode === 'table'" 
-      
+      [class.selected]="viewMode === 'table'"
       [attr.aria-pressed]="viewMode === 'table'"
       (click)="setView('table')">
       Table View
@@ -47,7 +42,6 @@
       (click)="setView('card')">
       Card View
     </button>
-    
   </div>
 
   @if (viewMode === 'table') {
@@ -55,7 +49,6 @@
       <table>
         <thead>
           <tr>
-            <th>ID</th>
             <th>Attribute Name</th>
             <th>Business Unit</th>
             <th>Customer Location</th>
@@ -68,29 +61,29 @@
         </thead>
 
         <tbody>
-          @for (attribute of attributes; track attribute.AttributeId) {
+          @for (attribute of (attributes$ | async) ?? []; track attribute.AttributeId) {
             <tr>
               <!-- {{}}interpolation - display ts value in html -->
-              <td>{{ attribute.AttributeId }}</td>
+             
               <td>{{ attribute.AttributeName }}</td>
               <td>{{ attribute.BusinessUnitName }}</td>
               <td>{{ attribute.CustomerLocationName }}</td>
               <td>{{ attribute.CompanyName }}</td>
               <td>
-                  <span [appActiveStatus]="attribute">
+                <span [appActiveStatus]="attribute">
                   {{ attribute.IsActive ? 'Active' : 'Inactive' }}
-                  </span>
+                </span>
               </td>
               <td>{{ attribute.CreatedOn | relativeTime }}</td>
               <td>{{ attribute.UpdatedOn | relativeTime }}</td>
-                              <!-- value | pipe name -->
+              <!-- value | pipe name -->
               <td>
-              <a [routerLink]="['/attributes', attribute.AttributeId, 'edit']">Edit</a> </td>
-           
+                <a [routerLink]="['/attributes', attribute.AttributeId, 'edit']">Edit</a>
+              </td>
             </tr>
           } @empty {
             <tr>
-              <td colspan="7">No attributes found</td>
+              <td colspan="9">No attributes found</td>
             </tr>
           }
         </tbody>
@@ -98,10 +91,10 @@
     </div>
   } @else {
     <div class="card-grid">
-      @for (attri of attributes; track attri.AttributeId) {
+      @for (attri of (attributes$ | async) ?? []; track attri.AttributeId) {
         <app-attribute-card [attribute]="attri" />
         <!-- [attribute] on the left refers to an input property on AttributeCardComponent -->
-        } @empty {
+      } @empty {
         <p>No attributes found</p>
       }
     </div>

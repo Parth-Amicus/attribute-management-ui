@@ -9,17 +9,29 @@ import { RelativeTimePipe } from '../../../../shared/pipes/relative-time-pipe';
 import { RouterLink } from '@angular/router'; //lets user to navigate to different url - used in html
 import { FormControl } from '@angular/forms';
 import { EMPTY, catchError, debounceTime, distinctUntilChanged, finalize, startWith, switchMap, tap } from 'rxjs';
+import { AsyncPipe } from '@angular/common';
+import { AppStateStore } from '../../../../core/services/app-state-store';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-attribute-list',
   standalone: true,
-  imports: [RouterLink, AttributeCardComponent, ActiveStatusDirective, RelativeTimePipe],
+  imports: [
+    RouterLink,
+    AttributeCardComponent,
+    ActiveStatusDirective,
+    RelativeTimePipe,
+    AsyncPipe
+  ],
   templateUrl: './attribute-list.html', // html gets access to attributes from here
   styleUrl: './attribute-list.css'
 })
 export class AttributeListComponent implements OnInit {
 
   attributes: IAttribute[] = []; //array of type attribute interface to hold the displayed records
+
+  // Observable that provides attributes from the centralized store.
+  attributes$: Observable<IAttribute[]>;
 
   // the table is the default view
   viewMode: 'table' | 'card' = 'table';
@@ -32,10 +44,22 @@ export class AttributeListComponent implements OnInit {
   constructor(
     private attributeService: AttributeService,
     private destroyRef: DestroyRef,
-    private changeDetector: ChangeDetectorRef
-  ) {} // provides service instance
+    private changeDetector: ChangeDetectorRef,
+    private store: AppStateStore
+  ) {
+    // Components read attributes from the centralized store.
+    this.attributes$ = this.store.attributes$;
+  }
 
   ngOnInit(): void {
+
+    // Fetch initial attributes from API and update the centralized store.
+    this.attributeService.getAttributes().pipe(
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe({
+      error: error => console.error('Error loading attributes:', error)
+    });
+
     this.searchControl.valueChanges.pipe( //pipe is used to chain multiple operators together to transform the data stream
       startWith(this.searchControl.value),
       distinctUntilChanged(),
@@ -65,7 +89,13 @@ export class AttributeListComponent implements OnInit {
       }),
       takeUntilDestroyed(this.destroyRef)
     ).subscribe(attributes => {
+
+      // Update the centralized store with the latest search results.
+      this.store.setAttributes(attributes);
+
+      // Keep the existing local property updated for compatibility.
       this.attributes = attributes;
+
       this.changeDetector.markForCheck();
     });
   }

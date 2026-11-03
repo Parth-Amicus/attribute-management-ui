@@ -1,29 +1,28 @@
 
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { AsyncPipe } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { Observable } from 'rxjs';
 
 import { AttributeService } from '../../../../core/services/attribute';
 import { LookupService } from '../../../../core/services/lookup';
+import { AppStateStore, ILookupState } from '../../../../core/services/app-state-store';
 
 import { IAttribute } from '../../../../interface/attribute.interface';
-import { IBusinessUnit } from '../../../../interface/business-unit.interface';
-import { ICustomerLocation } from '../../../../interface/customer-location.interface';
-import { ICompany } from '../../../../interface/company.interface';
 
 @Component({
   selector: 'app-edit-attribute', //selector identifies this component in HTML
   standalone: true,
-  imports: [FormsModule, RouterLink],
+  imports: [FormsModule, RouterLink, AsyncPipe],
   templateUrl: './edit-attribute.html',
   styleUrl: './edit-attribute.css'
 })
 export class EditAttributeComponent implements OnInit {
   @ViewChild('editForm') editForm?: NgForm; // gives ts class access to the form in html
 
-  businessUnits: IBusinessUnit[] = [];
-  customerLocations: ICustomerLocation[] = [];
-  companies: ICompany[] = [];
+  // Lookup data now comes from the centralized AppStateStore
+  lookups$: Observable<ILookupState>;
 
   selectedBusinessId: number | null = null;
   selectedCustomerLocationId: number | null = null;
@@ -49,8 +48,11 @@ export class EditAttributeComponent implements OnInit {
     private route: ActivatedRoute, //reads attribute id from url
     private router: Router,
     private attributeService: AttributeService,
-    private lookupService: LookupService
-  ) { }
+    private lookupService: LookupService,
+    private store: AppStateStore
+  ) {
+    this.lookups$ = this.store.lookups$;
+  }
 
   ngOnInit(): void {
 
@@ -65,12 +67,15 @@ export class EditAttributeComponent implements OnInit {
     };
 
     // Load Business Units from API
+    // LookupService saves the API response in AppStateStore
     this.lookupService.getBusinessUnits().subscribe({
-      next: businessUnits => {
-        this.businessUnits = businessUnits;
+      next: () => {
+
+        // Read Business Units from the centralized store
+        const businessUnits = this.store.currentState.lookups.businessUnits;
 
         // Convert the saved business unit name back to its lookup ID
-        const businessUnit = this.businessUnits.find(
+        const businessUnit = businessUnits.find(
           item => item.BusinessName === this.model.BusinessUnitName
         );
 
@@ -87,11 +92,14 @@ export class EditAttributeComponent implements OnInit {
     });
 
     // Load Companies from API
+    // LookupService saves the API response in AppStateStore
     this.lookupService.getCompanies().subscribe({
-      next: companies => {
-        this.companies = companies;
+      next: () => {
 
-        const company = this.companies.find(
+        // Read Companies from the centralized store
+        const companies = this.store.currentState.lookups.companies;
+
+        const company = companies.find(
           item => item.CompanyName === this.model.CompanyName
         );
 
@@ -106,11 +114,13 @@ export class EditAttributeComponent implements OnInit {
   // Fetch locations belonging to the selected business unit
   private loadCustomerLocations(businessId: number): void {
     this.lookupService.getCustomerLocations(businessId).subscribe({
-      next: locations => {
-        this.customerLocations = locations;
+      next: () => {
+
+        // Read Customer Locations from the centralized store
+        const locations = this.store.currentState.lookups.customerLocations;
 
         // Find the previously selected location when editing
-        const location = this.customerLocations.find(
+        const location = locations.find(
           item =>
             item.CustomerLocationName === this.model.CustomerLocationName
         );
@@ -128,7 +138,12 @@ export class EditAttributeComponent implements OnInit {
 
     // A location selected for the previous business unit is no longer valid
     this.selectedCustomerLocationId = null;
-    this.customerLocations = [];
+
+    // Clear previous locations from the centralized store
+    this.store.setLookups({
+      ...this.store.currentState.lookups,
+      customerLocations: []
+    });
 
     if (businessId === null) {
       return;
@@ -145,16 +160,19 @@ export class EditAttributeComponent implements OnInit {
       return;
     }
 
-    const businessUnit = this.businessUnits.find(
+    // Get the latest lookup values from the centralized store
+    const lookups = this.store.currentState.lookups;
+
+    const businessUnit = lookups.businessUnits.find(
       item => item.BusinessId === this.selectedBusinessId
     );
 
-    const location = this.customerLocations.find(
+    const location = lookups.customerLocations.find(
       item =>
         item.CustomerLocationId === this.selectedCustomerLocationId
     );
 
-    const company = this.companies.find(
+    const company = lookups.companies.find(
       item => item.CompanyId === this.selectedCompanyId
     );
 

@@ -1,19 +1,22 @@
 
 import { Injectable } from '@angular/core';
-
+import { AppStateStore } from './app-state-store';
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  // hardcoded login status
-  isLoggedIn = false;
+  constructor(private store: AppStateStore) {}
+
+  get isLoggedIn(): boolean {
+    return this.store.currentState.isAuthenticated;
+  }
 
   login(): void {
-    this.isLoggedIn = true;
+    this.store.setAuthenticated(true);
   }
 
   logout(): void {
-    this.isLoggedIn = false;
+    this.store.setAuthenticated(false);
   }
 }

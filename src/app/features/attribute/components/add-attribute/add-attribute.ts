@@ -8,28 +8,26 @@ import {
   Validators
 } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
+import { AsyncPipe } from '@angular/common';
 
 import { AttributeService } from '../../../../core/services/attribute';
 import { LookupService } from '../../../../core/services/lookup';
+import { AppStateStore, ILookupState } from '../../../../core/services/app-state-store';
 import { IAttribute } from '../../../../interface/attribute.interface';
-import { IBusinessUnit } from '../../../../interface/business-unit.interface';
-import { ICustomerLocation } from '../../../../interface/customer-location.interface';
-import { ICompany } from '../../../../interface/company.interface';
 import { attributeNameValidator } from '../../../../validator/attribute-name.validator';
 
 @Component({
   selector: 'app-add-attribute',
   standalone: true,
-  imports: [RouterLink, ReactiveFormsModule], //router link helps to navigate to diff url
+  imports: [RouterLink, ReactiveFormsModule, AsyncPipe], //router link helps to navigate to diff url
   templateUrl: './add-attribute.html',
   styleUrl: './add-attribute.css'
 })
 export class AddAttributeComponent implements OnInit, OnDestroy {
 
-  businessUnits: IBusinessUnit[] = [];
-  customerLocations: ICustomerLocation[] = [];
-  companies: ICompany[] = [];
+  // Lookup data now comes from the centralized AppStateStore
+  lookups$: Observable<ILookupState>;
 
   submitted = false; // help to decide when to show error
 
@@ -68,26 +66,25 @@ export class AddAttributeComponent implements OnInit, OnDestroy {
   constructor(
     private lookupService: LookupService,
     private attributeService: AttributeService,
+    private store: AppStateStore,
     private router: Router
-  ) {}
+  ) {
+    this.lookups$ = this.store.lookups$;
+  }
 
   ngOnInit(): void {
 
     // Loads business units from the API for the dropdown
+    // LookupService updates the centralized store with the API response
     this.lookupService.getBusinessUnits().subscribe({
-      next: businessUnits => {
-        this.businessUnits = businessUnits;
-      },
       error: error => {
         console.error('Failed to load business units:', error);
       }
     });
 
     // Loads companies from the API for the dropdown
+    // LookupService updates the centralized store with the API response
     this.lookupService.getCompanies().subscribe({
-      next: companies => {
-        this.companies = companies;
-      },
       error: error => {
         console.error('Failed to load companies:', error);
       }
@@ -98,28 +95,24 @@ export class AddAttributeComponent implements OnInit, OnDestroy {
     // this.form.controls.businessId accesses the business unit form control
       this.form.controls.businessId.valueChanges.subscribe(businessId => {
 
-        // Clear locations immediately while the new API request is running
-        this.customerLocations = [];
-
         if (businessId === null) {
           this.form.controls.customerLocationId.reset(null);
           this.form.controls.customerLocationId.disable();
           return;
         }
 
-        // Fetch locations belonging to the selected business unit
+        // A location selected for the previous business unit is no
+        // longer valid, so clear it when the business unit changes
+        this.form.controls.customerLocationId.reset(null);
+
+        // Fetch locations belonging to the selected business unit.
+        // LookupService saves the returned locations in AppStateStore.
         this.lookupService.getCustomerLocations(businessId).subscribe({
-          next: locations => {
-            this.customerLocations = locations;
-          },
           error: error => {
             console.error('Failed to load customer locations:', error);
           }
         });
 
-        // A location selected for the previous business unit is no
-        // longer valid, so clear it when the business unit changes
-        this.form.controls.customerLocationId.reset(null);
         this.form.controls.customerLocationId.enable();
       });
   }
@@ -151,15 +144,18 @@ export class AddAttributeComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const businessUnit = this.businessUnits.find(
+    // Get the latest lookup values from the centralized store
+    const lookups = this.store.currentState.lookups;
+
+    const businessUnit = lookups.businessUnits.find(
       item => item.BusinessId === value.businessId
     );
 
-    const location = this.customerLocations.find(
+    const location = lookups.customerLocations.find(
       item => item.CustomerLocationId === value.customerLocationId
     );
 
-    const company = this.companies.find(
+    const company = lookups.companies.find(
       item => item.CompanyId === value.companyId
     );
 

@@ -3,11 +3,11 @@ import { Injectable } from '@angular/core';
 import { IBusinessUnit } from '../../interface/business-unit.interface';
 import { ICustomerLocation } from '../../interface/customer-location.interface';
 import { ICompany } from '../../interface/company.interface';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { MappingService } from './mapping';
 import { HttpClient } from '@angular/common/http';
-
+import { AppStateStore } from './app-state-store';
 // Internal type: associates each location with a business unit.
 // BusinessId is used for filtering but is not part of ICustomerLocation.
 interface LocationLookup extends ICustomerLocation {
@@ -22,7 +22,8 @@ export class LookupService {
 
   constructor(
     private http: HttpClient,
-   // private mappingService: MappingService
+    private store: AppStateStore
+    // private mappingService: MappingService
   ) { }
   
 
@@ -54,11 +55,24 @@ export class LookupService {
   //   return [...this.businessUnits];
   // }
 
-  getBusinessUnits(): Observable<IBusinessUnit[]> {
-    return this.http.get<IBusinessUnit[]>(
-      `${this.apiUrl}/business_units`
-    );
-  }
+getBusinessUnits(): Observable<IBusinessUnit[]> {
+
+  return this.http.get<IBusinessUnit[]>(
+    `${this.apiUrl}/business_units`
+  ).pipe(
+
+    map((businessUnits) => {
+
+      this.store.setLookups({
+        ...this.store.currentState.lookups,
+        businessUnits
+      });
+
+      return businessUnits;
+    })
+
+  );
+}
 
   // getCustomerLocations(businessId: number): ICustomerLocation[] {
   //   return this.locations
@@ -68,19 +82,47 @@ export class LookupService {
   //       CustomerLocationName: location.CustomerLocationName
   //     }));
   // }
-   getCustomerLocations(businessId: number): Observable<ICustomerLocation[]> {
-    return this.http.get<ICustomerLocation[]>(
-      `${this.apiUrl}/customer_locations?BusinessId=${businessId}`
-    );
-  }
+  getCustomerLocations(
+  businessId: number
+): Observable<ICustomerLocation[]> {
+
+  return this.http.get<ICustomerLocation[]>(
+    `${this.apiUrl}/customer_locations?BusinessId=${businessId}`
+  ).pipe(
+
+    map(customerLocations => {
+
+      this.store.setLookups({
+        ...this.store.currentState.lookups,
+        customerLocations
+      });
+
+      return customerLocations;
+    })
+
+  );
+}
 
   // getCompanies(): ICompany[] {
   //   return [...this.companies];
   // }
 
-  getCompanies(): Observable<ICompany[]> {
-    return this.http.get<ICompany[]>(
-      `${this.apiUrl}/companies`
-    );
-  }
+getCompanies(): Observable<ICompany[]> {
+
+  return this.http.get<ICompany[]>(
+    `${this.apiUrl}/companies`
+  ).pipe(
+
+    map(companies => {
+
+      this.store.setLookups({
+        ...this.store.currentState.lookups,
+        companies
+      });
+
+      return companies;
+    })
+
+  );
+}
 }

@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable, map } from 'rxjs';
+import { Observable, map, switchMap } from 'rxjs';
 
 import { IAttribute } from '../../interface/attribute.interface';
 import { AttributeDTO } from '../../interface/attribute.dto';
 
 import { MappingService } from './mapping';
 import { environment } from '../../../environments/environment';
-
+import { AppStateStore } from './app-state-store';
 @Injectable({
   providedIn: 'root'
 })
@@ -33,19 +33,28 @@ export class AttributeService {
 
   constructor(
     private http: HttpClient,
-    private mappingService: MappingService
+    private mappingService: MappingService,
+    private store: AppStateStore
   ) { }
 
   // GET: Return all attributes from the API
-  getAttributes(): Observable<IAttribute[]> {
-    return this.http.get<AttributeDTO[]>(this.apiUrl).pipe(
-      map(attributes =>
-        attributes.map(attribute =>
-          this.mappingService.toAttribute(attribute) //toAttribute converts thr api data into frontend 
-        )
+getAttributes(): Observable<IAttribute[]> {
+
+  return this.http.get<AttributeDTO[]>(this.apiUrl).pipe(
+
+    map(attributes =>
+      attributes.map(attribute =>
+        this.mappingService.toAttribute(attribute)
       )
-    );
-  }
+    ),
+
+    map(attributes => {
+      this.store.setAttributes(attributes);
+      return attributes;
+    })
+
+  );
+}
 
   // GET: Find one attribute by its ID
   getAttributeById(id: number| string): Observable<IAttribute> {
@@ -55,15 +64,40 @@ export class AttributeService {
   }
 
   // POST: Add a new attribute
-  addAttribute(attribute: IAttribute): Observable<IAttribute> {
+addAttribute(attribute: IAttribute): Observable<IAttribute> {
 
-    // Exclude ID so json-server can generate a new one.
-    const { id, ...dto } = this.mappingService.toDTO(attribute);
+  return this.http.get<AttributeDTO[]>(this.apiUrl).pipe(
 
-    return this.http.post<AttributeDTO>(this.apiUrl, dto).pipe(
-      map(response => this.mappingService.toAttribute(response))
-    );
-  }
+    map(attributes => {
+      const numericIds = attributes
+        .map(item => Number(item.id))
+        .filter(id => Number.isInteger(id) && id > 0);
+
+      const latestId = Math.max(0, ...numericIds);
+
+      return latestId + 1;
+    }),
+
+    switchMap(nextId => {
+      const dto = this.mappingService.toDTO(attribute);
+      dto.id = nextId;
+
+      return this.http.post<AttributeDTO>(this.apiUrl, dto);
+    }),
+
+    map(response => this.mappingService.toAttribute(response)),
+
+    map(newAttribute => {
+      this.store.setAttributes([
+        ...this.store.currentState.attributes,
+        newAttribute
+      ]);
+
+      return newAttribute;
+    })
+
+  );
+}
 
   // PUT: Replace an existing attribute with its edited version
   updateAttribute(updatedAttribute: IAttribute): Observable<IAttribute> {
@@ -78,9 +112,23 @@ export class AttributeService {
   }
 
   // DELETE: Remove an attribute by its ID
-  deleteAttribute(id: number|string): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
-  }
+deleteAttribute(id: number | string): Observable<void> {
+
+  return this.http.delete<void>(`${this.apiUrl}/${id}`).pipe(
+
+    map(() => {
+
+      const updatedAttributes =
+        this.store.currentState.attributes.filter(
+          attribute => attribute.AttributeId !== id
+        );
+
+      this.store.setAttributes(updatedAttributes);
+
+    })
+
+  );
+}
 
   searchAttributes(searchTerm: string): Observable<IAttribute[]> {
     const term = searchTerm.trim();

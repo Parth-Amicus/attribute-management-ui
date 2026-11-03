@@ -1,13 +1,19 @@
+
 import { HttpInterceptorFn, HttpRequest } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastService } from '../services/toast';
+import { AppStateStore } from '../services/app-state-store';
 import { catchError, finalize, retry, throwError, timer } from 'rxjs';
+
+// Keeps track of how many HTTP requests are currently active
+let activeRequestCount = 0;
 
 export const httpInterceptor: HttpInterceptorFn = (req, next) => { //req is the outgoing http req and next is the next interceptor in the chain or the backend if there are no more interceptors
 
   const router = inject(Router);
   const toastService = inject(ToastService);
+  const store = inject(AppStateStore);
 
   // Generate a unique ID for every HTTP request
   const requestId = crypto.randomUUID();
@@ -22,35 +28,49 @@ export const httpInterceptor: HttpInterceptorFn = (req, next) => { //req is the 
   // Record the starting time to calculate request duration
   const startTime = Date.now();
 
+  // Increase the active request count when a request starts
+  activeRequestCount++;
+  store.setLoading(true);
+
   console.log(`Request Started: ${req.method} ${req.urlWithParams}`);
   console.log(`X-Request-Id: ${requestId}`);
   const response = next(modifiedRequest);
 
   // Retry only GET requests, maximum 2 times, with a 1-second delay
-  const retriedResponse = req.method === 'GET'? response.pipe(retry({count: 2,delay: () => timer(1000)})): response;
+  const retriedResponse = req.method === 'GET'
+    ? response.pipe(retry({ count: 2, delay: () => timer(1000) }))
+    : response;
 
   return retriedResponse.pipe(
 
-  catchError(error => {
+    catchError(error => {
 
-    if (error.status === 401) {
-      toastService.show('Your session has expired. Please log in again.');
-      void router.navigate(['/login']);
-    }
+      if (error.status === 401) {
+        toastService.show('Your session has expired. Please log in again.');
+        void router.navigate(['/login']);
+      }
 
-    if (error.status === 500) {
-      toastService.show('Something went wrong on the server. Please try again later.');
-    }
+      if (error.status === 500) {
+        toastService.show('Something went wrong on the server. Please try again later.');
+      }
 
-    return throwError(() => error);
-  }),
+      return throwError(() => error);
+    }),
 
-  finalize(() => {
-    const duration = Date.now() - startTime;
+    finalize(() => {
+      const duration = Date.now() - startTime;
 
-    console.log(
-      `Request Completed: ${req.method} ${req.urlWithParams} - ${duration}ms`
-    );
-  })
-);
+      // Decrease the count when this request finishes
+      activeRequestCount--;
+
+      // Hide the loader only when all active requests have completed
+      if (activeRequestCount === 0) {
+        store.setLoading(false);
+      }
+
+      console.log(
+        `Request Completed: ${req.method} ${req.urlWithParams} - ${duration}ms`
+      );
+    })
+  );
 };

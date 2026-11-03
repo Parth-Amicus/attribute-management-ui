@@ -56,7 +56,7 @@
       >
         <option [ngValue]="null">Select a business unit</option>
 
-        @for (unit of businessUnits; track unit.BusinessId) {
+        @for (unit of (lookups$ | async)?.businessUnits ?? []; track unit.BusinessId) {
           <option [ngValue]="unit.BusinessId">
             {{ unit.BusinessName }}
           </option>
@@ -84,7 +84,7 @@
       >
         <option [ngValue]="null">Select a customer location</option>
 
-        @for (location of customerLocations;
+        @for (location of (lookups$ | async)?.customerLocations ?? [];
              track location.CustomerLocationId) {
           <option [ngValue]="location.CustomerLocationId">
             {{ location.CustomerLocationName }}
@@ -112,7 +112,7 @@
       >
         <option [ngValue]="null">Select a company</option>
 
-        @for (company of companies; track company.CompanyId) {
+        @for (company of (lookups$ | async)?.companies ?? []; track company.CompanyId) {
           <option [ngValue]="company.CompanyId">
             {{ company.CompanyName }}
           </option>
@@ -145,7 +145,7 @@
         Save Changes
       </button>
 
-     <a routerLink="/attributes">Cancel</a>
+      <a routerLink="/attributes">Cancel</a>
     </div>
   </form>
 </section>
