@@ -8,11 +8,12 @@ import { RelativeTimePipe } from '../../../../shared/pipes/relative-time-pipe';
 import { FormsModule } from '@angular/forms';
 import { FilterByDirective } from '../../../../shared/directives/filter-by';
 import { RouterLink } from '@angular/router'; //lets user to navigate to different url - used in html
+
 @Component({
   selector: 'app-attribute-list',
   standalone: true,
-  imports: [RouterLink,FormsModule,FilterByDirective,AttributeCardComponent,ActiveStatusDirective,RelativeTimePipe],
-  templateUrl: './attribute-list.html', // html gets access to attributes from here 
+  imports: [RouterLink, FormsModule, FilterByDirective, AttributeCardComponent, ActiveStatusDirective, RelativeTimePipe],
+  templateUrl: './attribute-list.html', // html gets access to attributes from here
   styleUrl: './attribute-list.css'
 })
 export class AttributeListComponent implements OnInit {
@@ -22,16 +23,27 @@ export class AttributeListComponent implements OnInit {
   // the table is the default view
   viewMode: 'table' | 'card' = 'table';
 
-    // search term stays in the parent when the view changes
+  // search term stays in the parent when the view changes
   searchTerm = '';
 
   constructor(private attributeService: AttributeService) {} // provides service instance
 
-  
   ngOnInit(): void {
-    this.attributes = this.attributeService.getAttributes(); // using service instance and method 
+
+    // this.attributes = this.attributeService.getAttributes();
+
+    //  Fetch attributes from the API
+    this.attributeService.getAttributes().subscribe({
+      next: (attributes) => {
+        this.attributes = attributes;
+      },
+      error: (error) => {
+        console.error('Failed to load attributes:', error);
+      }
+    });
+
   } // runs when coponents are initialized
- 
+
   // change the presentation without reloading the data
   setView(mode: 'table' | 'card'): void {
     this.viewMode = mode;

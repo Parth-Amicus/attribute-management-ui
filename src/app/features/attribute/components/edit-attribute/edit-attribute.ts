@@ -19,7 +19,7 @@ import { ICompany } from '../../../../interface/company.interface';
   styleUrl: './edit-attribute.css'
 })
 export class EditAttributeComponent implements OnInit {
-  @ViewChild('editForm') editForm?: NgForm; // gives ts class access to the form in html 
+  @ViewChild('editForm') editForm?: NgForm; // gives ts class access to the form in html
 
   businessUnits: IBusinessUnit[] = [];
   customerLocations: ICustomerLocation[] = [];
@@ -52,68 +52,10 @@ export class EditAttributeComponent implements OnInit {
     private lookupService: LookupService
   ) { }
 
-  // ngOnInit(): void { //loading the initial data 
-
-  //    const attribute = this.route.snapshot.data['attribute'] as IAttribute;
-  //   this.businessUnits = this.lookupService.getBusinessUnits();
-  //   this.companies = this.lookupService.getCompanies();
-
-  //   const idParameter = this.route.snapshot.paramMap.get('id');
-  //   const attributeId = Number(idParameter);
-
-  //   if (!idParameter || !Number.isInteger(attributeId) || attributeId <= 0) {
-  //     void this.router.navigate(['/attributes']);
-  //     return;
-  //   }
-
-  //   const existingAttribute =this.attributeService.getAttributeById(attributeId);
-
-  //   if (!existingAttribute) {
-  //     void this.router.navigate(['/attributes']);
-  //     return;
-  //   }
-
-  //   // Copy the record so typing does not immediately change the stored record
-  //   this.model = {
-  //     ...existingAttribute,
-  //     CreatedOn: new Date(existingAttribute.CreatedOn),
-  //     UpdatedOn: new Date(existingAttribute.UpdatedOn)
-  //   };
-
-  //   // Convert the saved names back to lookup IDs for the dropdowns
-  //   const businessUnit = this.businessUnits.find(
-  //     item => item.BusinessName === this.model.BusinessUnitName
-  //   );
-
-  //   this.selectedBusinessId = businessUnit?.BusinessId ?? null;
-
-  //   if (this.selectedBusinessId !== null) {
-  //     this.customerLocations =this.lookupService.getCustomerLocations(this.selectedBusinessId);
-
-  //     const location = this.customerLocations.find(
-  //       item =>
-  //         item.CustomerLocationName === this.model.CustomerLocationName
-  //     );
-
-  //     this.selectedCustomerLocationId =
-  //       location?.CustomerLocationId ?? null;
-  //   }
-
-  //   const company = this.companies.find(
-  //     item => item.CompanyName === this.model.CompanyName
-  //   );
-
-  //   this.selectedCompanyId = company?.CompanyId ?? null;
-  // }
-
-
   ngOnInit(): void {
 
     // Get the attribute already fetched by the Resolver
     const existingAttribute = this.route.snapshot.data['attribute'] as IAttribute;
-
-    this.businessUnits = this.lookupService.getBusinessUnits();
-    this.companies = this.lookupService.getCompanies();
 
     // Copy the resolved record so typing does not immediately change stored data
     this.model = {
@@ -122,39 +64,77 @@ export class EditAttributeComponent implements OnInit {
       UpdatedOn: new Date(existingAttribute.UpdatedOn)
     };
 
-    // Convert the saved names back to lookup IDs for the dropdowns
-    const businessUnit = this.businessUnits.find(
-      item => item.BusinessName === this.model.BusinessUnitName
-    );
+    // Load Business Units from API
+    this.lookupService.getBusinessUnits().subscribe({
+      next: businessUnits => {
+        this.businessUnits = businessUnits;
 
-    this.selectedBusinessId = businessUnit?.BusinessId ?? null;
+        // Convert the saved business unit name back to its lookup ID
+        const businessUnit = this.businessUnits.find(
+          item => item.BusinessName === this.model.BusinessUnitName
+        );
 
-    if (this.selectedBusinessId !== null) {
-      this.customerLocations =
-        this.lookupService.getCustomerLocations(this.selectedBusinessId);
+        this.selectedBusinessId = businessUnit?.BusinessId ?? null;
 
-      const location = this.customerLocations.find(
-        item =>
-          item.CustomerLocationName === this.model.CustomerLocationName
-      );
+        // Load locations only after the business units are available
+        if (this.selectedBusinessId !== null) {
+          this.loadCustomerLocations(this.selectedBusinessId);
+        }
+      },
+      error: error => {
+        console.error('Failed to load business units:', error);
+      }
+    });
 
-      this.selectedCustomerLocationId =
-        location?.CustomerLocationId ?? null;
-    }
+    // Load Companies from API
+    this.lookupService.getCompanies().subscribe({
+      next: companies => {
+        this.companies = companies;
 
-    const company = this.companies.find(
-      item => item.CompanyName === this.model.CompanyName
-    );
+        const company = this.companies.find(
+          item => item.CompanyName === this.model.CompanyName
+        );
 
-    this.selectedCompanyId = company?.CompanyId ?? null;
+        this.selectedCompanyId = company?.CompanyId ?? null;
+      },
+      error: error => {
+        console.error('Failed to load companies:', error);
+      }
+    });
   }
 
+  // Fetch locations belonging to the selected business unit
+  private loadCustomerLocations(businessId: number): void {
+    this.lookupService.getCustomerLocations(businessId).subscribe({
+      next: locations => {
+        this.customerLocations = locations;
+
+        // Find the previously selected location when editing
+        const location = this.customerLocations.find(
+          item =>
+            item.CustomerLocationName === this.model.CustomerLocationName
+        );
+
+        this.selectedCustomerLocationId =
+          location?.CustomerLocationId ?? null;
+      },
+      error: error => {
+        console.error('Failed to load customer locations:', error);
+      }
+    });
+  }
 
   onBusinessUnitChange(businessId: number | null): void {
-    this.customerLocations = businessId === null ? [] : this.lookupService.getCustomerLocations(businessId);
 
     // A location selected for the previous business unit is no longer valid
     this.selectedCustomerLocationId = null;
+    this.customerLocations = [];
+
+    if (businessId === null) {
+      return;
+    }
+
+    this.loadCustomerLocations(businessId);
   }
 
   onSubmit(form: NgForm): void {
@@ -187,15 +167,22 @@ export class EditAttributeComponent implements OnInit {
     this.model.CompanyName = company.CompanyName;
     this.model.UpdatedOn = new Date();
     this.model.UpdatedBy = 'Current User';
-    //updated values
-    this.attributeService.updateAttribute(this.model);
 
-    // Prevent the unsaved-changes guard from warning after a successful save.
-    form.form.markAsPristine();
+    // Update attribute through API
+    this.attributeService.updateAttribute(this.model).subscribe({
+      next: updatedAttribute => {
+        console.log('Attribute updated successfully:', updatedAttribute);
 
-    void this.router.navigate(['/attributes']);
+        // Prevent the unsaved-changes guard from warning after a successful save.
+        form.form.markAsPristine();
+
+        void this.router.navigate(['/attributes']);
+      },
+      error: error => {
+        console.error('Failed to update attribute:', error);
+      }
+    });
   }
-
 
   canDeactivate(): boolean {
     if (this.editForm?.dirty) {
@@ -209,4 +196,4 @@ export class EditAttributeComponent implements OnInit {
 }
 
 
-//the update attribute () finds the exixting record with id and update it 
+//the update attribute () finds the exixting record with id and update it

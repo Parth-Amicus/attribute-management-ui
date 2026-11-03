@@ -1,19 +1,19 @@
 {
   "attributes": [
     {
-      "id": 1,
+      "id": "1",
       "attribute_name": "Employee Code",
       "business_unit_name": "Human Resources",
-      "customer_location_name": "Ahmedabad",
+      "customer_location_name": "Mumbai",
       "company_name": "Abc Solutions",
-      "is_active": true,
-      "created_on": "2024-01-10",
+      "is_active": false,
+      "created_on": "2024-01-10T00:00:00.000Z",
       "created_by": "Admin",
-      "updated_on": "2026-08-12",
-      "updated_by": "Parth"
+      "updated_on": "2026-11-03T07:26:27.972Z",
+      "updated_by": "Current User"
     },
     {
-      "id": 2,
+      "id": "2",
       "attribute_name": "Invoice Number",
       "business_unit_name": "Finance",
       "customer_location_name": "Mumbai",
@@ -25,7 +25,7 @@
       "updated_by": "Rahul"
     },
     {
-      "id": 3,
+      "id": "3",
       "attribute_name": "Project Code",
       "business_unit_name": "Engineering",
       "customer_location_name": "Pune",
@@ -37,7 +37,7 @@
       "updated_by": "Neha"
     },
     {
-      "id": 4,
+      "id": "4",
       "attribute_name": "Customer Reference",
       "business_unit_name": "Operations",
       "customer_location_name": "Bengaluru",
@@ -49,7 +49,7 @@
       "updated_by": "Amit"
     },
     {
-      "id": 5,
+      "id": "5",
       "attribute_name": "Department Name",
       "business_unit_name": "Human Resources",
       "customer_location_name": "Mumbai",
@@ -61,7 +61,7 @@
       "updated_by": "Admin"
     },
     {
-      "id": 6,
+      "id": "6",
       "attribute_name": "Payment Status",
       "business_unit_name": "Finance",
       "customer_location_name": "Ahmedabad",
@@ -73,7 +73,7 @@
       "updated_by": "Rahul"
     },
     {
-      "id": 7,
+      "id": "7",
       "attribute_name": "Release Version",
       "business_unit_name": "Engineering",
       "customer_location_name": "Bengaluru",
@@ -85,7 +85,7 @@
       "updated_by": "Parth"
     },
     {
-      "id": 8,
+      "id": "8",
       "attribute_name": "Delivery Status",
       "business_unit_name": "Operations",
       "customer_location_name": "Pune",
@@ -95,36 +95,144 @@
       "created_by": "Admin",
       "updated_on": "2025-12-02",
       "updated_by": "Neha"
+    },
+    {
+      "id": "GKzYT_a5ohs",
+      "attribute_name": "Employee Code",
+      "business_unit_name": "Operations",
+      "customer_location_name": "Bengaluru",
+      "company_name": "Abc Technology",
+      "is_active": false,
+      "created_on": "2026-11-03T06:24:24.298Z",
+      "created_by": "Current User",
+      "updated_on": "2026-11-03T07:56:29.187Z",
+      "updated_by": "Current User"
+    },
+    {
+      "id": "l0Fh82FR_ls",
+      "attribute_name": "Payment Statuse",
+      "business_unit_name": "Engineering",
+      "customer_location_name": "Bengaluru",
+      "company_name": "Abc Technology",
+      "is_active": true,
+      "created_on": "2026-11-03T06:59:17.456Z",
+      "created_by": "Current User",
+      "updated_on": "2026-11-03T07:24:59.908Z",
+      "updated_by": "Current User"
+    },
+    {
+      "attribute_name": "Test 10112",
+      "business_unit_name": "Engineering",
+      "customer_location_name": "Pune",
+      "company_name": "Abc Technology",
+      "is_active": true,
+      "created_on": "2026-11-03T07:58:27.163Z",
+      "created_by": "Current User",
+      "updated_on": "2026-11-03T07:58:27.163Z",
+      "updated_by": "Current User",
+      "id": "HaFfVn9jroI"
+    },
+    {
+      "attribute_name": "Test Attribute1",
+      "business_unit_name": "Engineering",
+      "customer_location_name": "Pune",
+      "company_name": "Abc Technology",
+      "is_active": true,
+      "created_on": "2026-11-03T09:14:59.439Z",
+      "created_by": "Current User",
+      "updated_on": "2026-11-03T09:14:59.439Z",
+      "updated_by": "Current User",
+      "id": "r1dJLN4RD6g"
     }
   ],
-
   "business_units": [
-
-  { "BusinessId": 1, "BusinessName": "Engineering" },
-  { "BusinessId": 2, "BusinessName": "Finance" },
-  { "BusinessId": 3, "BusinessName": "Human Resources" },
-  { "BusinessId": 4, "BusinessName": "Operations" }
-
-
+    {
+      "BusinessId": 1,
+      "BusinessName": "Engineering",
+      "id": "bKlN4W_3Idg"
+    },
+    {
+      "BusinessId": 2,
+      "BusinessName": "Finance",
+      "id": "cZBZq69Bwg8"
+    },
+    {
+      "BusinessId": 3,
+      "BusinessName": "Human Resources",
+      "id": "j99FP1llaAg"
+    },
+    {
+      "BusinessId": 4,
+      "BusinessName": "Operations",
+      "id": "beBggd3RLdI"
+    }
   ],
-
-  "customer_locations":[
-  { "CustomerLocationId": 1, "CustomerLocationName": "Pune", "BusinessId": 1 },
-  { "CustomerLocationId": 2, "CustomerLocationName": "Bengaluru", "BusinessId": 1 },
-  { "CustomerLocationId": 3, "CustomerLocationName": "Mumbai", "BusinessId": 2 },
-  { "CustomerLocationId": 4, "CustomerLocationName": "Ahmedabad", "BusinessId": 2 },
-  { "CustomerLocationId": 5, "CustomerLocationName": "Ahmedabad", "BusinessId": 3 },
-  { "CustomerLocationId": 6, "CustomerLocationName": "Mumbai", "BusinessId": 3 },
-  { "CustomerLocationId": 7, "CustomerLocationName": "Bengaluru", "BusinessId": 4 },
-  { "CustomerLocationId": 8, "CustomerLocationName": "Pune", "BusinessId": 4 }
-],
-"companies":[
-      { "CompanyId": 1, "CompanyName": "Abc Technology" },
-  { "CompanyId": 2, "CompanyName": "Abc Consulting" },
-  { "CompanyId": 3, "CompanyName": "Abc Solutions" }
-]
-
-
+  "customer_locations": [
+    {
+      "CustomerLocationId": 1,
+      "CustomerLocationName": "Pune",
+      "BusinessId": 1,
+      "id": "aEV-mXrBPD4"
+    },
+    {
+      "CustomerLocationId": 2,
+      "CustomerLocationName": "Bengaluru",
+      "BusinessId": 1,
+      "id": "Kd10SAJFsjw"
+    },
+    {
+      "CustomerLocationId": 3,
+      "CustomerLocationName": "Mumbai",
+      "BusinessId": 2,
+      "id": "qccLEfI70yE"
+    },
+    {
+      "CustomerLocationId": 4,
+      "CustomerLocationName": "Ahmedabad",
+      "BusinessId": 2,
+      "id": "ap6cSmgr48s"
+    },
+    {
+      "CustomerLocationId": 5,
+      "CustomerLocationName": "Ahmedabad",
+      "BusinessId": 3,
+      "id": "OU2VkCzrZaY"
+    },
+    {
+      "CustomerLocationId": 6,
+      "CustomerLocationName": "Mumbai",
+      "BusinessId": 3,
+      "id": "oXX4tBZ-qno"
+    },
+    {
+      "CustomerLocationId": 7,
+      "CustomerLocationName": "Bengaluru",
+      "BusinessId": 4,
+      "id": "7s7vOFQrTfo"
+    },
+    {
+      "CustomerLocationId": 8,
+      "CustomerLocationName": "Pune",
+      "BusinessId": 4,
+      "id": "ZspYx5cXctA"
+    }
+  ],
+  "companies": [
+    {
+      "CompanyId": 1,
+      "CompanyName": "Abc Technology",
+      "id": "KVCcW7wOg7M"
+    },
+    {
+      "CompanyId": 2,
+      "CompanyName": "Abc Consulting",
+      "id": "jSmsq6l9eQ8"
+    },
+    {
+      "CompanyId": 3,
+      "CompanyName": "Abc Solutions",
+      "id": "Jk42LvuL1Lg"
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
 }
-
-

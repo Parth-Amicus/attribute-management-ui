@@ -1,6 +1,11 @@
 
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import {AbstractControl,FormControl,FormGroup,ReactiveFormsModule,Validators
+import {
+  AbstractControl,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators
 } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -16,7 +21,7 @@ import { attributeNameValidator } from '../../../../validator/attribute-name.val
 @Component({
   selector: 'app-add-attribute',
   standalone: true,
-  imports: [RouterLink,ReactiveFormsModule], //router link helps to navigate to diff url
+  imports: [RouterLink, ReactiveFormsModule], //router link helps to navigate to diff url
   templateUrl: './add-attribute.html',
   styleUrl: './add-attribute.css'
 })
@@ -67,31 +72,61 @@ export class AddAttributeComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.businessUnits = this.lookupService.getBusinessUnits(); // loads data for dropdown 
-    this.companies = this.lookupService.getCompanies();// loads data for dropdown
+
+    // Loads business units from the API for the dropdown
+    this.lookupService.getBusinessUnits().subscribe({
+      next: businessUnits => {
+        this.businessUnits = businessUnits;
+      },
+      error: error => {
+        console.error('Failed to load business units:', error);
+      }
+    });
+
+    // Loads companies from the API for the dropdown
+    this.lookupService.getCompanies().subscribe({
+      next: companies => {
+        this.companies = companies;
+      },
+      error: error => {
+        console.error('Failed to load companies:', error);
+      }
+    });
 
     // refresh the available locations whenever the business unit changes as CL depends on BU
     this.businessUnitSubscription =
-    // this.form.controls.businessId accesses the business unit form control 
+    // this.form.controls.businessId accesses the business unit form control
       this.form.controls.businessId.valueChanges.subscribe(businessId => {
-        this.customerLocations = businessId === null
-          ? []
-          : this.lookupService.getCustomerLocations(businessId);
+
+        // Clear locations immediately while the new API request is running
+        this.customerLocations = [];
+
+        if (businessId === null) {
+          this.form.controls.customerLocationId.reset(null);
+          this.form.controls.customerLocationId.disable();
+          return;
+        }
+
+        // Fetch locations belonging to the selected business unit
+        this.lookupService.getCustomerLocations(businessId).subscribe({
+          next: locations => {
+            this.customerLocations = locations;
+          },
+          error: error => {
+            console.error('Failed to load customer locations:', error);
+          }
+        });
 
         // A location selected for the previous business unit is no
         // longer valid, so clear it when the business unit changes
         this.form.controls.customerLocationId.reset(null);
-
-        if (businessId === null) {
-          this.form.controls.customerLocationId.disable();
-        } else {
-          this.form.controls.customerLocationId.enable();
-        }
+        this.form.controls.customerLocationId.enable();
       });
   }
 
   isFieldInvalid(
-    fieldName:| 'attributeName'| 'businessId'| 'customerLocationId'| 'companyId'): boolean {
+    fieldName: 'attributeName' | 'businessId' | 'customerLocationId' | 'companyId'
+  ): boolean {
     const control = this.form.controls[fieldName];
 
     return control.invalid && (control.touched || this.submitted);
@@ -106,7 +141,8 @@ export class AddAttributeComponent implements OnInit, OnDestroy {
     }
 
     const value = this.form.getRawValue(); // retrive value of all the fields
- // additional safeguard 
+
+    // additional safeguard
     if (
       value.businessId === null ||
       value.customerLocationId === null ||
@@ -133,15 +169,8 @@ export class AddAttributeComponent implements OnInit, OnDestroy {
 
     const currentDate = new Date();
 
-    const existingAttributes = this.attributeService.getAttributes();
-
-    const nextId = existingAttributes.reduce(
-      (maxId, attribute) => Math.max(maxId, attribute.AttributeId),
-      0
-    ) + 1;
-
     const newAttribute: IAttribute = {
-      AttributeId: nextId,
+      AttributeId: 0,
       AttributeName: value.attributeName.trim(),
       BusinessUnitName: businessUnit.BusinessName,
       CustomerLocationName: location.CustomerLocationName,
@@ -153,10 +182,14 @@ export class AddAttributeComponent implements OnInit, OnDestroy {
       UpdatedBy: 'Current User'
     };
 
-    this.attributeService.addAttribute(newAttribute);
-
-    // Return to the list after adding the record.
-   void this.router.navigate(['/attributes']);
+    this.attributeService.addAttribute(newAttribute).subscribe({
+      next: () => {
+        void this.router.navigate(['/attributes']);
+      },
+      error: error => {
+        console.error('Failed to add attribute:', error);
+      }
+    });
   }
 
   ngOnDestroy(): void {

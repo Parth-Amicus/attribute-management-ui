@@ -1,6 +1,12 @@
-
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable, map } from 'rxjs';
+
 import { IAttribute } from '../../interface/attribute.interface';
+import { AttributeDTO } from '../../interface/attribute.dto';
+
+import { MappingService } from './mapping';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -19,140 +25,60 @@ export class AttributeService {
    * the List, Add, and Edit components need to access the same data.
    */
 
-//    Angular creates exactly one shared instance (a Singleton) of AttributeService for the entire app
-//    No matter how many components request this service, they all talk to the same execution block and the same memory space
+  // Angular creates exactly one shared instance (a Singleton) of AttributeService for the entire app.
+  // No matter how many components request this service, they all talk to the same execution block.
 
-  private attributes: IAttribute[] = [
-    {
-      AttributeId: 1,
-      AttributeName: 'Employee Code',
-      BusinessUnitName: 'Human Resources',
-      CustomerLocationName: 'Ahmedabad',
-      CompanyName: 'Abc Solutions',
-      IsActive: true,
-      CreatedOn: new Date('2024-01-10'), // using date object unlocks different methods 
-      CreatedBy: 'Admin',
-      UpdatedOn: new Date('2026-08-12'),
-      UpdatedBy: 'Parth'
-    },
-    {
-      AttributeId: 2,
-      AttributeName: 'Invoice Number',
-      BusinessUnitName: 'Finance',
-      CustomerLocationName: 'Mumbai',
-      CompanyName: 'Abc Consulting',
-      IsActive: true,
-      CreatedOn: new Date('2023-05-20'),
-      CreatedBy: 'Neha',
-      UpdatedOn: new Date('2026-09-05'),
-      UpdatedBy: 'Rahul'
-    },
-    {
-      AttributeId: 3,
-      AttributeName: 'Project Code',
-      BusinessUnitName: 'Engineering',
-      CustomerLocationName: 'Pune',
-      CompanyName: 'Abc Technology',
-      IsActive: false,
-      CreatedOn: new Date('2022-11-15'),
-      CreatedBy: 'Amit',
-      UpdatedOn: new Date('2025-04-18'),
-      UpdatedBy: 'Neha'
-    },
-    {
-      AttributeId: 4,
-      AttributeName: 'Customer Reference',
-      BusinessUnitName: 'Operations',
-      CustomerLocationName: 'Bengaluru',
-      CompanyName: 'Abc Consulting',
-      IsActive: true,
-      CreatedOn: new Date('2025-02-01'),
-      CreatedBy: 'Rahul',
-      UpdatedOn: new Date('2026-07-21'),
-      UpdatedBy: 'Amit'
-    },
-    {
-      AttributeId: 5,
-      AttributeName: 'Department Name',
-      BusinessUnitName: 'Human Resources',
-      CustomerLocationName: 'Mumbai',
-      CompanyName: 'Abc Technology',
-      IsActive: false,
-      CreatedOn: new Date('2021-08-12'),
-      CreatedBy: 'Neha',
-      UpdatedOn: new Date('2024-10-10'),
-      UpdatedBy: 'Admin'
-    },
-    {
-      AttributeId: 6,
-      AttributeName: 'Payment Status',
-      BusinessUnitName: 'Finance',
-      CustomerLocationName: 'Ahmedabad',
-      CompanyName: 'Abc Solutions',
-      IsActive: true,
-      CreatedOn: new Date('2024-06-25'),
-      CreatedBy: 'Parth',
-      UpdatedOn: new Date('2026-10-01'),
-      UpdatedBy: 'Rahul'
-    },
-    {
-      AttributeId: 7,
-      AttributeName: 'Release Version',
-      BusinessUnitName: 'Engineering',
-      CustomerLocationName: 'Bengaluru',
-      CompanyName: 'Abc Technology',
-      IsActive: true,
-      CreatedOn: new Date('2025-09-08'),
-      CreatedBy: 'Amit',
-      UpdatedOn: new Date('2026-09-30'),
-      UpdatedBy: 'Parth'
-    },
-    {
-      AttributeId: 8,
-      AttributeName: 'Delivery Status',
-      BusinessUnitName: 'Operations',
-      CustomerLocationName: 'Pune',
-      CompanyName: 'Abc Solutions',
-      IsActive: false,
-      CreatedOn: new Date('2023-03-14'),
-      CreatedBy: 'Admin',
-      UpdatedOn: new Date('2025-12-02'),
-      UpdatedBy: 'Neha'
-    }
-  ];
+  // API endpoint for attributes. The base URL comes from environment.ts.
+  private apiUrl = `${environment.apiUrl}/attributes`;
 
-  // Return a new array so callers cannot directly add/remove array entries
-  getAttributes(): IAttribute[] {
-    return [...this.attributes];
-  }
+  constructor(
+    private http: HttpClient,
+    private mappingService: MappingService
+  ) { }
 
-  // Find one attribute by its ID
-  getAttributeById(id: number): IAttribute | undefined {
-    return this.attributes.find(
-      attribute => attribute.AttributeId === id
+  // GET: Return all attributes from the API
+  getAttributes(): Observable<IAttribute[]> {
+    return this.http.get<AttributeDTO[]>(this.apiUrl).pipe(
+      map(attributes =>
+        attributes.map(attribute =>
+          this.mappingService.toAttribute(attribute) //toAttribute converts thr api data into frontend 
+        )
+      )
     );
   }
 
-  // Add a new attribute to the shared data
-  addAttribute(attribute: IAttribute): void {
-    this.attributes.push(attribute);
+  // GET: Find one attribute by its ID
+  getAttributeById(id: number| string): Observable<IAttribute> {
+    return this.http.get<AttributeDTO>(`${this.apiUrl}/${id}`).pipe(
+      map(attribute => this.mappingService.toAttribute(attribute))
+    );
   }
 
-  // Replace an existing attribute with its edited version
-  updateAttribute(updatedAttribute: IAttribute): void {
-    const index = this.attributes.findIndex(
-      attribute => attribute.AttributeId === updatedAttribute.AttributeId
-    );
+  // POST: Add a new attribute
+  addAttribute(attribute: IAttribute): Observable<IAttribute> {
 
-    if (index !== -1) {
-      this.attributes[index] = updatedAttribute;
-    }
+    // Exclude ID so json-server can generate a new one.
+    const { id, ...dto } = this.mappingService.toDTO(attribute);
+
+    return this.http.post<AttributeDTO>(this.apiUrl, dto).pipe(
+      map(response => this.mappingService.toAttribute(response))
+    );
   }
 
-  // Remove an attribute by its ID
-  deleteAttribute(id: number): void {
-    this.attributes = this.attributes.filter(
-      attribute => attribute.AttributeId !== id
+  // PUT: Replace an existing attribute with its edited version
+  updateAttribute(updatedAttribute: IAttribute): Observable<IAttribute> {
+    const dto = this.mappingService.toDTO(updatedAttribute);
+
+    return this.http.put<AttributeDTO>(
+      `${this.apiUrl}/${updatedAttribute.AttributeId}`,
+      dto
+    ).pipe(
+      map(response => this.mappingService.toAttribute(response))
     );
+  }
+
+  // DELETE: Remove an attribute by its ID
+  deleteAttribute(id: number|string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 }

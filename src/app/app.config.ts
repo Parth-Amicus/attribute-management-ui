@@ -8,6 +8,6 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(), // used for listening error globally (throw new Error())
     provideRouter(routes), provideClientHydration(), //configures the router
-    
+    provideHttpClient()
   ]
 };

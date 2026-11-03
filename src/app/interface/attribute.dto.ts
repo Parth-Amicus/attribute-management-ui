@@ -1,6 +1,6 @@
 
 export interface AttributeDTO {
-  id: number;
+  id: number | string;
   attribute_name: string;
   business_unit_name: string;
   customer_location_name: string;

@@ -1,6 +1,6 @@
 //by default interface are private so to use it in other we have to use export
 export interface IAttribute {
-  AttributeId: number;
+  AttributeId: number | string;
   AttributeName: string;
   BusinessUnitName: string;
   CustomerLocationName: string;

@@ -12,7 +12,7 @@ export class MappingService {
   // Convert API DTO into the frontend model
   toAttribute(dto: AttributeDTO): IAttribute {
     return {
-      AttributeId: dto.id,
+       AttributeId: dto.id,
       AttributeName: dto.attribute_name,
       BusinessUnitName: dto.business_unit_name,
       CustomerLocationName: dto.customer_location_name,

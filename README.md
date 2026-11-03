@@ -182,3 +182,16 @@ with the Attribute feature. This demonstrates that the feature is loaded
 separately rather than being statically imported into the root application.
 
 Screenshot: screenshots/attribute-lazy-loading.png
+
+### Attribute data and SSR
+
+Routes use `RenderMode.Server` rather than `RenderMode.Prerender` so attribute
+data is fetched at request time. Prerendering would bake an API response into
+the generated page and require a rebuild to reflect changes in `db.json`.
+
+### Why not use the api
+
+- Separation between API and frontend models.
+- Consistent property names in components.
+- Centralized conversion logic.
+- Easier maintenance when the backend structure changes.
