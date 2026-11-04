@@ -70,7 +70,7 @@ tbody tr:last-child td {
 }
 
 td a,
-.attribute-card > a {
+.action-link {
   color: #276458;
   font-weight: 600;
   text-decoration: none;
@@ -78,9 +78,33 @@ td a,
 }
 
 td a:hover,
-.attribute-card > a:hover {
+.action-link:hover {
   color: #1d4e44;
   text-decoration: underline;
+}
+
+.delete-action,
+.delete-action:hover {
+  color: #b42318;
+}
+
+.delete-action:hover {
+  color: #8f1d14;
+}
+
+.attribute-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.attribute-actions .action-link {
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
 }
 
 .view-toggle {
@@ -177,8 +201,7 @@ td a:hover,
   color: #a12622;
 }
 
-.add-attribute-link,
-.logout-button {
+.add-attribute-link {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -191,21 +214,18 @@ td a:hover,
   font-size: 0.88rem;
   font-weight: 600;
   text-decoration: none;
-  cursor: pointer;
   transition:
     background-color 140ms ease,
     border-color 140ms ease,
     transform 140ms ease;
 }
 
-.add-attribute-link:hover,
-.logout-button:hover {
+.add-attribute-link:hover {
   border-color: #254b6b;
   background: #254b6b;
 }
 
-.add-attribute-link:active,
-.logout-button:active {
+.add-attribute-link:active {
   transform: translateY(1px);
 }
 
@@ -232,8 +252,7 @@ td a:hover,
     align-items: flex-start;
   }
 
-  .add-attribute-link,
-  .logout-button {
+  .add-attribute-link {
     flex-shrink: 0;
   }
 

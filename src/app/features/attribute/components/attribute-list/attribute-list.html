@@ -5,9 +5,6 @@
       @if (isAdmin) {
         <a class="add-attribute-link" routerLink="/attributes/add">Add Attribute</a>
       }
-      @if (isLoggedIn) {
-        <button class="logout-button" type="button" (click)="logout()">Logout</button>
-      }
     </div>
   </div>
 
@@ -88,11 +85,15 @@
 
               <td>
                 @if (isAdmin) {
-                  <a [routerLink]="['/attributes', attribute.AttributeId, 'edit']"> Edit </a>
-                  <button type="button" (click)="deleteAttribute(attribute)">Delete</button>
+                  <div class="attribute-actions">
+                    <a class="action-link" [routerLink]="['/attributes', attribute.AttributeId, 'edit']">Edit</a>
+                    <button class="action-link delete-action" type="button" (click)="deleteAttribute(attribute)">Delete</button>
+                  </div>
                 } @else {
-                  <span class="disabled-action" aria-disabled="true">Edit</span>
-                  <span class="disabled-action" aria-disabled="true">Delete</span>
+                  <div class="attribute-actions">
+                    <span class="disabled-action" aria-disabled="true">Edit</span>
+                    <span class="disabled-action" aria-disabled="true">Delete</span>
+                  </div>
                 }
               </td>
             </tr>

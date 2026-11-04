@@ -16,8 +16,10 @@
   <p><strong>Created On:</strong> {{ attribute.CreatedOn | relativeTime }}</p>
   <p><strong>Updated On:</strong> {{ attribute.UpdatedOn | relativeTime }}</p>
   @if (isAdmin) {
-    <a [routerLink]="['/attributes', attribute.AttributeId, 'edit']"> Edit </a>
-    <button type="button" (click)="onDelete()">Delete</button>
+    <div class="attribute-actions">
+      <a class="action-link" [routerLink]="['/attributes', attribute.AttributeId, 'edit']">Edit</a>
+      <button class="action-link delete-action" type="button" (click)="onDelete()">Delete</button>
+    </div>
   } @else {
     <span class="disabled-action" aria-disabled="true"> Edit </span>
   }

@@ -1,3 +1,12 @@
 <app-toast />
 <app-loader />
+@if (currentUser(); as user) {
+  <header class="app-header">
+    <div class="user-profile">
+      <span class="username">{{ user.username }}</span>
+      <span class="role-badge" [appActiveStatus]="user.role">{{ user.role }}</span>
+    </div>
+    <button class="logout-button" type="button" (click)="logout()">Logout</button>
+  </header>
+}
 <router-outlet />

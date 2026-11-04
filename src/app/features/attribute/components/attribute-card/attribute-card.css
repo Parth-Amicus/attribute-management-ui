@@ -51,9 +51,37 @@ p strong {
   font-weight: 600;
 }
 
-.attribute-card > a {
-  display: inline-block;
+.attribute-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
   margin-top: 16px;
+}
+
+.action-link {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #276458;
+  font: inherit;
+  font-weight: 600;
+  text-decoration: none;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.action-link:hover {
+  color: #1d4e44;
+  text-decoration: underline;
+}
+
+.delete-action,
+.delete-action:hover {
+  color: #b42318;
+}
+
+.delete-action:hover {
+  color: #8f1d14;
 }
 
 .status {

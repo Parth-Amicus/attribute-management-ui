@@ -4,6 +4,7 @@
 import { Directive, ElementRef, Input, OnChanges, Renderer2, SimpleChanges } from '@angular/core';
 
 import { IAttribute } from '../../interface/attribute.interface';
+import { UserRole } from '../../interface/user-role';
 
 @Directive({
   selector: '[appActiveStatus]', //angular will recognixe the directive when html uses appActiveStatus
@@ -11,7 +12,7 @@ import { IAttribute } from '../../interface/attribute.interface';
 })
 export class ActiveStatusDirective implements OnChanges {
 
-  @Input({ required: true }) appActiveStatus!: IAttribute; //receives the complete attribute object
+  @Input({ required: true }) appActiveStatus!: IAttribute | UserRole;
 
   constructor(
     private elementRef: ElementRef<HTMLElement>, //give access to html element
@@ -25,16 +26,22 @@ export class ActiveStatusDirective implements OnChanges {
   } //called when sets ip for first time and when i/p changes 
 
   private updateStatus(): void {
-    const isActive = this.appActiveStatus.IsActive;
+    let backgroundColor: string;
+    let textColor: string;
+    let tooltip: string;
 
-    const backgroundColor = isActive ? '#dcfce7' : '#fee2e2';
-    const textColor = isActive ? '#166534' : '#991b1b';
-
-    const relevantDate = isActive ? this.appActiveStatus.CreatedOn : this.appActiveStatus.UpdatedOn;
-
-    const formattedDate = relevantDate.toLocaleDateString();
-
-    const tooltip = isActive ? `Active since ${formattedDate}` : `Inactive since ${formattedDate}`;
+    if (typeof this.appActiveStatus === 'string') {
+      const isAdmin = this.appActiveStatus === 'Admin';
+      backgroundColor = isAdmin ? '#dcfce7' : '#dbeafe';
+      textColor = isAdmin ? '#166534' : '#1e40af';
+      tooltip = `Role: ${this.appActiveStatus}`;
+    } else {
+      const isActive = this.appActiveStatus.IsActive;
+      backgroundColor = isActive ? '#dcfce7' : '#fee2e2';
+      textColor = isActive ? '#166534' : '#991b1b';
+      const relevantDate = isActive ? this.appActiveStatus.CreatedOn : this.appActiveStatus.UpdatedOn;
+      tooltip = `${isActive ? 'Active' : 'Inactive'} since ${relevantDate.toLocaleDateString()}`;
+    }
 
     const element = this.elementRef.nativeElement; //if the directive is attached to a span the element refers to the same 
 
