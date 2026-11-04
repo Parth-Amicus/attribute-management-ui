@@ -1,8 +1,14 @@
-
 <section class="page">
   <div class="page-head">
     <h1>Attribute Management</h1>
-    <a class="add-attribute-link" routerLink="/attributes/add">Add Attribute</a>
+    <div class="page-actions">
+      @if (isAdmin) {
+        <a class="add-attribute-link" routerLink="/attributes/add">Add Attribute</a>
+      }
+      @if (isLoggedIn) {
+        <button class="logout-button" type="button" (click)="logout()">Logout</button>
+      }
+    </div>
   </div>
 
   <!-- <p class="subtitle">View and manage your attributes</p> -->
@@ -31,7 +37,8 @@
       /* property binding */
       [class.selected]="viewMode === 'table'"
       [attr.aria-pressed]="viewMode === 'table'"
-      (click)="setView('table')">
+      (click)="setView('table')"
+    >
       Table View
     </button>
 
@@ -39,7 +46,8 @@
       type="button"
       [class.selected]="viewMode === 'card'"
       [attr.aria-pressed]="viewMode === 'card'"
-      (click)="setView('card')">
+      (click)="setView('card')"
+    >
       Card View
     </button>
   </div>
@@ -64,7 +72,7 @@
           @for (attribute of (attributes$ | async) ?? []; track attribute.AttributeId) {
             <tr>
               <!-- {{}}interpolation - display ts value in html -->
-             
+
               <td>{{ attribute.AttributeName }}</td>
               <td>{{ attribute.BusinessUnitName }}</td>
               <td>{{ attribute.CustomerLocationName }}</td>
@@ -77,8 +85,15 @@
               <td>{{ attribute.CreatedOn | relativeTime }}</td>
               <td>{{ attribute.UpdatedOn | relativeTime }}</td>
               <!-- value | pipe name -->
+
               <td>
-                <a [routerLink]="['/attributes', attribute.AttributeId, 'edit']">Edit</a>
+                @if (isAdmin) {
+                  <a [routerLink]="['/attributes', attribute.AttributeId, 'edit']"> Edit </a>
+                  <button type="button" (click)="deleteAttribute(attribute)">Delete</button>
+                } @else {
+                  <span class="disabled-action" aria-disabled="true">Edit</span>
+                  <span class="disabled-action" aria-disabled="true">Delete</span>
+                }
               </td>
             </tr>
           } @empty {
@@ -92,7 +107,7 @@
   } @else {
     <div class="card-grid">
       @for (attri of (attributes$ | async) ?? []; track attri.AttributeId) {
-        <app-attribute-card [attribute]="attri" />
+        <app-attribute-card [attribute]="attri" (delete)="deleteAttribute($event)" />
         <!-- [attribute] on the left refers to an input property on AttributeCardComponent -->
       } @empty {
         <p>No attributes found</p>

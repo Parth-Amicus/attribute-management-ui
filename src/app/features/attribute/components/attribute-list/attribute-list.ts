@@ -6,13 +6,14 @@ import { IAttribute } from '../../../../interface/attribute.interface';
 import { AttributeCardComponent } from '../attribute-card/attribute-card';
 import { ActiveStatusDirective } from '../../../../shared/directives/active-status';
 import { RelativeTimePipe } from '../../../../shared/pipes/relative-time-pipe';
-import { RouterLink } from '@angular/router'; //lets user to navigate to different url - used in html
+import { Router, RouterLink } from '@angular/router'; //lets user to navigate to different url - used in html
 import { FormControl } from '@angular/forms';
 import { EMPTY, catchError, debounceTime, distinctUntilChanged, finalize, startWith, switchMap, tap } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 import { AppStateStore } from '../../../../core/services/app-state-store';
 import { Observable } from 'rxjs';
-
+import { AuthService } from '../../../../core/services/auth';
+import { ToastService } from '../../../../core/services/toast';
 @Component({
   selector: 'app-attribute-list',
   standalone: true,
@@ -40,12 +41,21 @@ export class AttributeListComponent implements OnInit {
   isSearching = true;
   searchError = '';
   private searchVersion = 0;
-
+  // Checks whether the currently logged-in user is an Admin.
+  get isAdmin(): boolean {
+    return this.authService.currentUser?.role === 'Admin';
+  }
+  get isLoggedIn(): boolean {
+    return this.authService.currentUser !== null;
+  }
   constructor(
     private attributeService: AttributeService,
     private destroyRef: DestroyRef,
     private changeDetector: ChangeDetectorRef,
-    private store: AppStateStore
+    private store: AppStateStore,
+    private authService: AuthService,
+    private router: Router,
+    private toastService: ToastService
   ) {
     // Components read attributes from the centralized store.
     this.attributes$ = this.store.attributes$;
@@ -107,6 +117,43 @@ export class AttributeListComponent implements OnInit {
 
     this.searchControl.setValue(searchTerm);
   }
+
+  logout(): void {
+    this.authService.logout();
+    void this.router.navigate(['/login']);
+  }
+
+  // Deletes an attribute. Only Admin users are allowed to perform this action.
+  deleteAttribute(attribute: IAttribute): void {
+
+    // Extra permission check before executing the delete operation.
+    if (!this.isAdmin) {
+      this.toastService.show('Access denied');
+      return;
+    }
+
+    // Ask for confirmation before deleting.
+    const confirmed = window.confirm(
+      `Are you sure you want to delete "${attribute.AttributeName}"?`
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    this.attributeService.deleteAttribute(attribute.AttributeId).pipe(
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe({
+      next: () => {
+        this.toastService.show('Attribute deleted successfully');
+      },
+      error: error => {
+        console.error('Error deleting attribute:', error);
+        this.toastService.show('Unable to delete attribute');
+      }
+    });
+  }
+
 
   // change the presentation without reloading the data
   setView(mode: 'table' | 'card'): void {

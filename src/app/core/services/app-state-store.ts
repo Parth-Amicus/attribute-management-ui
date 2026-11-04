@@ -5,6 +5,7 @@ import { IAttribute } from '../../interface/attribute.interface';
 import { IBusinessUnit } from '../../interface/business-unit.interface';
 import { ICustomerLocation } from '../../interface/customer-location.interface';
 import { ICompany } from '../../interface/company.interface';
+import { IAuthUser } from '../../interface/auth-user.interface';
 
 // Defines the structure of lookup data.
 export interface ILookupState {
@@ -19,6 +20,7 @@ export interface IAppState {
     lookups: ILookupState;
     isLoading: boolean;
     isAuthenticated: boolean;
+    currentUser: IAuthUser | null; //Interface IAuth represnets the current logged in user information
 }
 
 @Injectable({
@@ -37,7 +39,8 @@ export class AppStateStore {
         },
 
         isLoading: false,
-        isAuthenticated: false
+        isAuthenticated: false,
+        currentUser: null
     };
 
     // BehaviorSubject stores the latest application state
@@ -79,6 +82,11 @@ export class AppStateStore {
         this.updateState({ isAuthenticated });
     }
 
+    // Updates the currently logged-in user
+    setCurrentUser(currentUser: IAuthUser | null): void {
+        this.updateState({ currentUser });
+    } // allows app to store current user 
+
     // Individual observable state slices
     attributes$ = this.state$.pipe(
         map(state => state.attributes),
@@ -99,4 +107,8 @@ export class AppStateStore {
         map(state => state.isAuthenticated),
         distinctUntilChanged()
     );
+    currentUser$ = this.state$.pipe(
+        map(state => state.currentUser),
+        distinctUntilChanged()
+    ); // allows components to subscribe to changes in the current user state
 }

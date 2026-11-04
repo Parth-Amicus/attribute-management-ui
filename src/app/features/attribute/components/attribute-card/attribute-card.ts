@@ -4,29 +4,40 @@ import { IAttribute } from '../../../../interface/attribute.interface';
 import { ActiveStatusDirective } from '../../../../shared/directives/active-status';
 import { RelativeTimePipe } from '../../../../shared/pipes/relative-time-pipe';
 import { RouterLink } from '@angular/router';
+import { AuthService } from '../../../../core/services/auth';
+import { Output, EventEmitter } from '@angular/core';
 @Component({
   selector: 'app-attribute-card',
   standalone: true,
-  imports: [RouterLink,ActiveStatusDirective,RelativeTimePipe],
+  imports: [RouterLink, ActiveStatusDirective, RelativeTimePipe],
   templateUrl: './attribute-card.html',
   styleUrl: './attribute-card.css'
 })
 export class AttributeCardComponent {
   @Input({ required: true }) attribute!: IAttribute; // ! ensures that this value is not going to be null so let angular access it 
   // angular performs an assignment conceptually like this.attribute = attri
+  @Output() delete = new EventEmitter<IAttribute>();
 
+  onDelete(): void {
+    this.delete.emit(this.attribute);
+  }
+  constructor(private authService: AuthService) { }
+  // Checks whether the currently logged-in user is an Admin.
+  get isAdmin(): boolean {
+    return this.authService.currentUser?.role === 'Admin';
+  }
   //runs when angular initializes the component 
-  ngOnInit(){
+  ngOnInit() {
     console.log('[AttributeCard] ngOnInit', this.attribute.AttributeName);
   }
 
-    // runs when the @Input property changes
+  // runs when the @Input property changes
   // It also runs initially when Angular first sets the input
   ngOnChanges(changes: SimpleChanges): void { //simplechanges is angular type that describes changes to components inout property 
     const attributeChange = changes['attribute'];  //changes is an object Angular provides that describes which input properties changed
 
     if (attributeChange) {
-      console.log('[AttributeCard] ngOnChanges:',attributeChange.currentValue as IAttribute
+      console.log('[AttributeCard] ngOnChanges:', attributeChange.currentValue as IAttribute
       );
     }
   }

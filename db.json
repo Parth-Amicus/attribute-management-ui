@@ -143,42 +143,6 @@
       "updated_on": "2026-11-03T09:14:59.439Z",
       "updated_by": "Current User",
       "id": "r1dJLN4RD6g"
-    },
-    {
-      "id": "Swwyswv9lbg",
-      "attribute_name": "Test Attributeq",
-      "business_unit_name": "Human Resources",
-      "customer_location_name": "Ahmedabad",
-      "company_name": "Abc Technology",
-      "is_active": false,
-      "created_on": "2026-11-03T13:34:01.484Z",
-      "created_by": "Current User",
-      "updated_on": "2026-11-03T13:34:12.484Z",
-      "updated_by": "Current User"
-    },
-    {
-      "id": "O8-1nszPPEY",
-      "attribute_name": "Test Attribute",
-      "business_unit_name": "Engineering",
-      "customer_location_name": "Pune",
-      "company_name": "Abc Technology",
-      "is_active": true,
-      "created_on": "2026-11-03T13:56:19.406Z",
-      "created_by": "Current User",
-      "updated_on": "2026-11-03T13:56:19.406Z",
-      "updated_by": "Current User"
-    },
-    {
-      "id": "qNHtT_maai0",
-      "attribute_name": "Test Attribute",
-      "business_unit_name": "Engineering",
-      "customer_location_name": "Pune",
-      "company_name": "Abc Technology",
-      "is_active": true,
-      "created_on": "2026-11-03T13:56:29.775Z",
-      "created_by": "Current User",
-      "updated_on": "2026-11-03T13:56:29.775Z",
-      "updated_by": "Current User"
     }
   ],
   "business_units": [
