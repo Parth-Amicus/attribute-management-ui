@@ -8,7 +8,7 @@ import { authGuard } from './core/guards/auth.guard';
 
 //Works on first match
 export const routes: Routes = [
-  {
+  { //defualt route 
     path: '',
     redirectTo: 'login', //redirects the user to /login
     pathMatch: 'full' //default is prefix and '' is prefix of every path

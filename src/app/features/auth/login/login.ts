@@ -7,26 +7,27 @@ import { IdleTimeoutService } from '../../../core/services/idle-timeout';
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule], // forms module is imported to use ngModel for two-way data binding
   templateUrl: './login.html',
   styleUrl: './login.css'
 })
 export class LoginComponent {
-
+ 
+  //when user types somethiing these properties will be updated with ngmodel
   username = '';
   password = '';
   errorMessage = '';
 
   constructor(
     private authService: AuthService,
-    private router: Router,
-    private route: ActivatedRoute,
+    private router: Router, // used when you want to naviagate 
+    private route: ActivatedRoute, // used for getting the info from currently active route 
     private idleTimeoutService: IdleTimeoutService
   ) { }
 
   login(): void {
 
-    // Normalize username to avoid case-sensitive login issues
+    //  avoid case-sensitive login issues
     const enteredUsername = this.username.trim().toLowerCase();
 
     // Determine the user's role based on hardcoded credentials
@@ -52,11 +53,11 @@ export class LoginComponent {
     this.authService.login({
       username: enteredUsername,
       role: role
-    });
+    }); // passed to auth serviec and auth service will storw it in app state store
 
     this.idleTimeoutService.startWatching();
 
-    // Preserve the existing return URL navigation
+    // preserve the existing return URL navigation
     const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
 
     this.router.navigateByUrl(

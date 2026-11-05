@@ -10,10 +10,10 @@ import { ToastService } from './toast';
 })
 export class IdleTimeoutService {
 
-    // 10 minutes expressed in milliseconds.
+    
     private readonly idleTime = 10 * 60 * 1000;
 
-    // Used to stop the activity monitoring subscription.
+    // Used to stop the activity monitoring subscription
     private stop$ = new Subject<void>();
 
     constructor(
@@ -26,9 +26,9 @@ export class IdleTimeoutService {
         // Stop any previous monitoring before starting a new one.
         this.stopWatching();
 
-        // Observe different types of user activity.
-        const activity$ = merge(
-            fromEvent(document, 'mousemove'),
+       
+        const activity$ = merge( // merge - combines multiple observables 
+            fromEvent(document, 'mousemove'), // converts browser events into observables 
             fromEvent(document, 'click'),
             fromEvent(document, 'keydown'),
             fromEvent(document, 'scroll'),
@@ -36,14 +36,14 @@ export class IdleTimeoutService {
         );
 
         activity$.pipe(
-            startWith(null),
+            startWith(null), // emits an initial value to trigger the timer immediately upon starting
             switchMap(() => timer(this.idleTime)),
             takeUntil(this.stop$)
         ).subscribe(() => {
             // Log out when the user has been inactive for 10 minutes.
             this.authService.logout();
 
-            this.toastService.show('You have been logged out due to inactivity.');
+            this.toastService.show('You have been logged out due to inactivity');
 
             this.router.navigate(['/login']);
 

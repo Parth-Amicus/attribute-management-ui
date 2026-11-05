@@ -7,14 +7,14 @@ import { ICustomerLocation } from '../../interface/customer-location.interface';
 import { ICompany } from '../../interface/company.interface';
 import { IAuthUser } from '../../interface/auth-user.interface';
 
-// Defines the structure of lookup data.
+// Defines the structure of lookup data
 export interface ILookupState {
     businessUnits: IBusinessUnit[];
     customerLocations: ICustomerLocation[];
     companies: ICompany[];
 }
 
-// Defines the complete application state.
+// Defines the complete application state
 export interface IAppState {
     attributes: IAttribute[];
     lookups: ILookupState;
@@ -44,9 +44,12 @@ export class AppStateStore {
     };
 
     // BehaviorSubject stores the latest application state
+     
+    // subject is the object that sends data to subscribers
+    // a behavior subject is a type of subject that requires an initial value and emits its current value to new subscribers
     private stateSubject = new BehaviorSubject<IAppState>(this.initialState);
 
-    // Components can observe the state but cannot directly modify it
+    // Components can observe the state but cannot directly modify it - sent as observable 
     state$ = this.stateSubject.asObservable();
 
     // Returns the current state
@@ -55,10 +58,11 @@ export class AppStateStore {
     }
 
     // Updates the application state
+    // partial is used because what if we dont want to update all the properties 
     private updateState(newState: Partial<IAppState>): void {
         this.stateSubject.next({
-            ...this.currentState,
-            ...newState
+            ...this.currentState, // copies all existing properties
+            ...newState //copies all properties you want to update into the same new object
         });
     }
 
@@ -87,7 +91,10 @@ export class AppStateStore {
         this.updateState({ currentUser });
     } // allows app to store current user 
 
+
+
     // Individual observable state slices
+    // distinct until changed ensures that subscribers are only notified when the specific slice of state changes
     attributes$ = this.state$.pipe(
         map(state => state.attributes),
         distinctUntilChanged()

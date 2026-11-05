@@ -46,12 +46,12 @@ export const httpInterceptor: HttpInterceptorFn = (req, next) => { //req is the 
     catchError(error => {
 
       if (error.status === 401) {
-        toastService.show('Your session has expired. Please log in again.');
+        toastService.show('Your session has expired please log in again');
         void router.navigate(['/login']);
       }
 
       if (error.status === 500) {
-        toastService.show('Something went wrong on the server. Please try again later.');
+        toastService.show('Something went wrong on the server');
       }
 
       return throwError(() => error);
