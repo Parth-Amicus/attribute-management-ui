@@ -1,15 +1,14 @@
 
-import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, inject } from '@angular/core';
 import { AppStateStore } from '../../core/services/app-state-store';
 import { AttributeService } from '../../core/services/attribute';
 import { IAttribute } from '../../interface/attribute.interface';
-import { DecimalPipe } from '@angular/common';
 import { ActivityService, IActivity } from '../../core/services/activity';
 import { AsyncPipe, DatePipe } from '@angular/common';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [DecimalPipe, AsyncPipe, DatePipe],
+  imports: [AsyncPipe, DatePipe],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -26,6 +25,7 @@ export class DashboardComponent implements OnInit {
   constructor(
     private attributeService: AttributeService,
     private store: AppStateStore,
+    private changeDetector: ChangeDetectorRef,
   ) { }
 
   ngOnInit(): void {
@@ -33,6 +33,7 @@ export class DashboardComponent implements OnInit {
       next: attributes => {
         this.attributes = attributes;
         this.calculateSummary();
+        this.changeDetector.markForCheck();
       },
       error: error => {
         console.error('Unable to load dashboard data:', error);
@@ -52,27 +53,76 @@ export class DashboardComponent implements OnInit {
     ).length;
   }
 
-  // Calculates the percentage of active attributes.
-  get activePercentage(): number {
-    if (this.totalAttributes === 0) return 0;
+    
+// SVG chart dimensions.
+readonly chartWidth = 700;
+readonly chartHeight = 300;
+readonly chartTop = 20;
+readonly chartBottom = 240;
+readonly chartLeft = 55;
+readonly chartRight = 20;
 
-    return (this.activeAttributes / this.totalAttributes) * 100;
-  }
+// Calculates the maximum value used on the Y-axis.
+get chartMaxCount(): number {
+  const maxCount = Math.max(
+    0,
+    ...this.businessUnitCounts.map(item => item.count)
+  );
 
-  // Calculates the percentage of inactive attributes.
-  get inactivePercentage(): number {
-    if (this.totalAttributes === 0) return 0;
+  // Round up to a convenient scale.
+  return Math.max(5, Math.ceil(maxCount / 5) * 5);
+}
 
-    return (this.inactiveAttributes / this.totalAttributes) * 100;
-  }
+private get businessUnitCounts(): { businessUnitName: string; count: number }[] {
+  const counts = new Map<string, number>();
 
-  // SVG circle circumference for radius 45.
-  readonly circleCircumference = 2 * Math.PI * 45;
+  this.attributes.forEach(attribute => {
+    const businessUnit = attribute.BusinessUnitName || 'Unknown';
 
-  // Calculates the active portion of the SVG circle.
-  get activeStrokeLength(): number {
-    return (this.activePercentage / 100) * this.circleCircumference;
-  }
+    counts.set(
+      businessUnit,
+      (counts.get(businessUnit) ?? 0) + 1
+    );
+  });
+
+  return Array.from(counts, ([businessUnitName, count]) => ({
+    businessUnitName,
+    count
+  }));
+}
+
+// Groups attributes by Business Unit and calculates bar positions.
+get businessUnitChartData() {
+  const entries = this.businessUnitCounts;
+  const plotWidth = this.chartWidth - this.chartLeft - this.chartRight;
+  const slotWidth = entries.length > 0
+    ? plotWidth / entries.length
+    : plotWidth;
+
+  const barWidth = Math.min(55, slotWidth * 0.6);
+  const plotHeight = this.chartBottom - this.chartTop;
+
+  return entries.map((item, index) => {
+    const barHeight = (item.count / this.chartMaxCount) * plotHeight;
+
+    return {
+      ...item,
+      x: this.chartLeft + (index * slotWidth) + (slotWidth - barWidth) / 2,
+      y: this.chartBottom - barHeight,
+      width: barWidth,
+      height: barHeight,
+      labelX: this.chartLeft + (index * slotWidth) + slotWidth / 2
+    };
+  });
+}
+
+// Generates six equally spaced Y-axis values.
+get chartYAxisTicks(): number[] {
+  return Array.from({ length: 6 }, (_, index) =>
+    (this.chartMaxCount / 5) * index
+  );
+}
+
 
 
 }

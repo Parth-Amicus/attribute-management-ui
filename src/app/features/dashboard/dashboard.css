@@ -160,3 +160,16 @@
     flex-direction: column;
   }
 }
+
+
+.bar-chart-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.business-unit-chart {
+  display: block;
+  width: 100%;
+  min-width: 500px;
+  max-height: 350px;
+}

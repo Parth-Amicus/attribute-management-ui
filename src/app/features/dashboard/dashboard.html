@@ -1,3 +1,4 @@
+
 <section class="dashboard">
   <div class="dashboard-header">
     <h1>Dashboard</h1>
@@ -21,47 +22,113 @@
       <p class="summary-value">{{ inactiveAttributes }}</p>
     </div>
   </div>
-  <!-- Attribute Status Chart -->
+
+  <!-- Attribute Count Per Business Unit Bar Chart -->
   <div class="chart-section">
-    <h2>Attribute Status Overview</h2>
+    <h2>Attribute Count Per Business Unit</h2>
 
-    <div class="chart-container">
-      <svg viewBox="0 0 120 120" class="status-chart">
-        <!-- Background circle represents all attributes. -->
-        <circle cx="60" cy="60" r="45" fill="none" stroke="#fee2e2" stroke-width="12" />
+    <div class="bar-chart-container">
+      <svg
+        [attr.viewBox]="'0 0 ' + chartWidth + ' ' + chartHeight"
+        class="business-unit-chart"
+        role="img"
+        aria-label="Bar chart showing attribute count per business unit"
+      >
 
-        <!-- Active attributes portion. -->
-        <circle
-          cx="60"
-          cy="60"
-          r="45"
-          fill="none"
-          stroke="#16a34a"
-          stroke-width="12"
-          [attr.stroke-dasharray]="activeStrokeLength + ' ' + circleCircumference"
-          stroke-linecap="butt"
-          transform="rotate(-90 60 60)"
+        <!-- Y-axis -->
+        <line
+          [attr.x1]="chartLeft"
+          [attr.y1]="chartTop"
+          [attr.x2]="chartLeft"
+          [attr.y2]="chartBottom"
+          stroke="#64748b"
+          stroke-width="1.5"
         />
 
-        <!-- Total count in the center. -->
-        <text x="60" y="60" text-anchor="middle" dominant-baseline="middle" class="chart-total">
-          {{ totalAttributes }}
-        </text>
+        <!-- X-axis -->
+        <line
+          [attr.x1]="chartLeft"
+          [attr.y1]="chartBottom"
+          [attr.x2]="chartWidth - chartRight"
+          [attr.y2]="chartBottom"
+          stroke="#64748b"
+          stroke-width="1.5"
+        />
+
+        <!-- Y-axis grid lines and labels -->
+        @for (tick of chartYAxisTicks; track tick) {
+          <line
+            [attr.x1]="chartLeft"
+            [attr.y1]="chartBottom - (tick / chartMaxCount) * (chartBottom - chartTop)"
+            [attr.x2]="chartWidth - chartRight"
+            [attr.y2]="chartBottom - (tick / chartMaxCount) * (chartBottom - chartTop)"
+            stroke="#e2e8f0"
+            stroke-dasharray="4 4"
+          />
+
+          <text
+            [attr.x]="chartLeft - 12"
+            [attr.y]="chartBottom - (tick / chartMaxCount) * (chartBottom - chartTop) + 4"
+            text-anchor="end"
+            fill="#64748b"
+            font-size="12"
+          >
+            {{ tick }}
+          </text>
+        }
+
+        <!-- Bars representing attribute count per business unit -->
+        @for (item of businessUnitChartData; track item.businessUnitName) {
+          <rect
+            [attr.x]="item.x"
+            [attr.y]="item.y"
+            [attr.width]="item.width"
+            [attr.height]="item.height"
+            fill="#3b82f6"
+            rx="4"
+          />
+
+          <!-- Attribute count above each bar -->
+          <text
+            [attr.x]="item.labelX"
+            [attr.y]="item.y - 8"
+            text-anchor="middle"
+            fill="#1e293b"
+            font-size="13"
+            font-weight="bold"
+          >
+            {{ item.count }}
+          </text>
+
+          <!-- Business Unit name below each bar -->
+          <text
+            [attr.x]="item.labelX"
+            [attr.y]="chartBottom + 22"
+            text-anchor="middle"
+            fill="#475569"
+            font-size="12"
+          >
+            {{ item.businessUnitName }}
+          </text>
+        }
+
+        <!-- Display message when no data is available -->
+        @if (businessUnitChartData.length === 0) {
+          <text
+            x="350"
+            y="130"
+            text-anchor="middle"
+            fill="#64748b"
+            font-size="14"
+          >
+            No business unit data available
+          </text>
+        }
+
       </svg>
-
-      <div class="chart-legend">
-        <p>
-          <span class="legend-dot active-dot"></span>
-          Active: {{ activeAttributes }} ({{ activePercentage | number: '1.0-1' }}%)
-        </p>
-
-        <p>
-          <span class="legend-dot inactive-dot"></span>
-          Inactive: {{ inactiveAttributes }} ({{ inactivePercentage | number: '1.0-1' }}%)
-        </p>
-      </div>
     </div>
   </div>
+
   <!-- Recent Activity -->
   <div class="activity-section">
     <h2>Recent Activity</h2>
