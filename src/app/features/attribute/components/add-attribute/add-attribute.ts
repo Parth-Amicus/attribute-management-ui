@@ -10,7 +10,8 @@ import {
 import { Router, RouterLink } from '@angular/router';
 import { Subscription, Observable } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
-
+import { ActivityService } from '../../../../core/services/activity';
+import { AuthService } from '../../../../core/services/auth';
 import { AttributeService } from '../../../../core/services/attribute';
 import { LookupService } from '../../../../core/services/lookup';
 import { AppStateStore, ILookupState } from '../../../../core/services/app-state-store';
@@ -67,7 +68,9 @@ export class AddAttributeComponent implements OnInit, OnDestroy {
     private lookupService: LookupService,
     private attributeService: AttributeService,
     private store: AppStateStore,
-    private router: Router
+    private router: Router,
+    private activityService: ActivityService,
+    private authService: AuthService
   ) {
     this.lookups$ = this.store.lookups$;
   }
@@ -92,7 +95,7 @@ export class AddAttributeComponent implements OnInit, OnDestroy {
 
     // refresh the available locations whenever the business unit changes as CL depends on BU
     this.businessUnitSubscription =
-    // this.form.controls.businessId accesses the business unit form control
+      // this.form.controls.businessId accesses the business unit form control
       this.form.controls.businessId.valueChanges.subscribe(businessId => {
 
         if (businessId === null) {
@@ -179,7 +182,15 @@ export class AddAttributeComponent implements OnInit, OnDestroy {
     };
 
     this.attributeService.addAttribute(newAttribute).subscribe({
-      next: () => {
+      next: createdAttribute => {
+
+        // Record the successful create operation.
+        this.activityService.addActivity(
+          'Created',
+          createdAttribute.AttributeName,
+          this.authService.currentUser?.username ?? 'Unknown'
+        );
+
         void this.router.navigate(['/attributes']);
       },
       error: error => {

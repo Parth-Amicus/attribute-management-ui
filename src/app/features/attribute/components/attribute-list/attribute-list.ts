@@ -14,6 +14,7 @@ import { AppStateStore } from '../../../../core/services/app-state-store';
 import { Observable } from 'rxjs';
 import { AuthService } from '../../../../core/services/auth';
 import { ToastService } from '../../../../core/services/toast';
+import { ActivityService } from '../../../../core/services/activity';
 @Component({
   selector: 'app-attribute-list',
   standalone: true,
@@ -55,7 +56,8 @@ export class AttributeListComponent implements OnInit {
     private store: AppStateStore,
     private authService: AuthService,
     private router: Router,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private activityService: ActivityService
   ) {
     // Components read attributes from the centralized store.
     this.attributes$ = this.store.attributes$;
@@ -145,8 +147,14 @@ export class AttributeListComponent implements OnInit {
       takeUntilDestroyed(this.destroyRef)
     ).subscribe({
       next: () => {
+        this.activityService.addActivity(
+          'Deleted',
+          attribute.AttributeName,
+          this.authService.currentUser?.username ?? 'Unknown'
+        );
         this.toastService.show('Attribute deleted successfully');
       },
+
       error: error => {
         console.error('Error deleting attribute:', error);
         this.toastService.show('Unable to delete attribute');

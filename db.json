@@ -95,54 +95,6 @@
       "created_by": "Admin",
       "updated_on": "2025-12-02",
       "updated_by": "Neha"
-    },
-    {
-      "id": "GKzYT_a5ohs",
-      "attribute_name": "Employee Code",
-      "business_unit_name": "Operations",
-      "customer_location_name": "Bengaluru",
-      "company_name": "Abc Technology",
-      "is_active": false,
-      "created_on": "2026-11-03T06:24:24.298Z",
-      "created_by": "Current User",
-      "updated_on": "2026-11-03T07:56:29.187Z",
-      "updated_by": "Current User"
-    },
-    {
-      "id": "l0Fh82FR_ls",
-      "attribute_name": "Payment Statuse",
-      "business_unit_name": "Engineering",
-      "customer_location_name": "Bengaluru",
-      "company_name": "Abc Technology",
-      "is_active": true,
-      "created_on": "2026-11-03T06:59:17.456Z",
-      "created_by": "Current User",
-      "updated_on": "2026-11-03T07:24:59.908Z",
-      "updated_by": "Current User"
-    },
-    {
-      "attribute_name": "Test 10112",
-      "business_unit_name": "Engineering",
-      "customer_location_name": "Pune",
-      "company_name": "Abc Technology",
-      "is_active": true,
-      "created_on": "2026-11-03T07:58:27.163Z",
-      "created_by": "Current User",
-      "updated_on": "2026-11-03T07:58:27.163Z",
-      "updated_by": "Current User",
-      "id": "HaFfVn9jroI"
-    },
-    {
-      "attribute_name": "Test Attribute1",
-      "business_unit_name": "Engineering",
-      "customer_location_name": "Pune",
-      "company_name": "Abc Technology",
-      "is_active": true,
-      "created_on": "2026-11-03T09:14:59.439Z",
-      "created_by": "Current User",
-      "updated_on": "2026-11-03T09:14:59.439Z",
-      "updated_by": "Current User",
-      "id": "r1dJLN4RD6g"
     }
   ],
   "business_units": [

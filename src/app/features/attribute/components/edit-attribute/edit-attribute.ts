@@ -4,7 +4,8 @@ import { AsyncPipe } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Observable } from 'rxjs';
-
+import { ActivityService } from '../../../../core/services/activity';
+import { AuthService } from '../../../../core/services/auth';
 import { AttributeService } from '../../../../core/services/attribute';
 import { LookupService } from '../../../../core/services/lookup';
 import { AppStateStore, ILookupState } from '../../../../core/services/app-state-store';
@@ -49,7 +50,9 @@ export class EditAttributeComponent implements OnInit {
     private router: Router,
     private attributeService: AttributeService,
     private lookupService: LookupService,
-    private store: AppStateStore
+    private store: AppStateStore,
+    private activityService: ActivityService,
+    private authService: AuthService
   ) {
     this.lookups$ = this.store.lookups$;
   }
@@ -190,6 +193,13 @@ export class EditAttributeComponent implements OnInit {
     this.attributeService.updateAttribute(this.model).subscribe({
       next: updatedAttribute => {
         console.log('Attribute updated successfully:', updatedAttribute);
+
+        // Record the successful update operation.
+        this.activityService.addActivity(
+          'Updated',
+          updatedAttribute.AttributeName,
+          this.authService.currentUser?.username ?? 'Unknown'
+        );
 
         // Prevent the unsaved-changes guard from warning after a successful save.
         form.form.markAsPristine();
