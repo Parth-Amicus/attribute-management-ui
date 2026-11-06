@@ -8,13 +8,17 @@ import { ActiveStatusDirective } from '../../../../shared/directives/active-stat
 import { RelativeTimePipe } from '../../../../shared/pipes/relative-time-pipe';
 import { Router, RouterLink } from '@angular/router'; //lets user to navigate to different url - used in html
 import { FormControl } from '@angular/forms';
-import { EMPTY, catchError, debounceTime, distinctUntilChanged, finalize, startWith, switchMap, tap } from 'rxjs';
+import { debounceTime, distinctUntilChanged, finalize, startWith, tap } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 import { AppStateStore } from '../../../../core/services/app-state-store';
 import { Observable } from 'rxjs';
 import { AuthService } from '../../../../core/services/auth';
 import { ToastService } from '../../../../core/services/toast';
 import { ActivityService } from '../../../../core/services/activity';
+import { ConfirmDialogComponent } from '../../../../shared/components/confirm-dialog/confirm-dialog';
+import { IDataTableColumn } from '../../../../shared/components/data-table/data-table';
+import { DataTableComponent } from '../../../../shared/components/data-table/data-table';
+
 @Component({
   selector: 'app-attribute-list',
   standalone: true,
@@ -23,7 +27,9 @@ import { ActivityService } from '../../../../core/services/activity';
     AttributeCardComponent,
     ActiveStatusDirective,
     RelativeTimePipe,
-    AsyncPipe
+    AsyncPipe,
+    ConfirmDialogComponent,
+    DataTableComponent
   ],
   templateUrl: './attribute-list.html', // html gets access to attributes from here
   styleUrl: './attribute-list.css'
@@ -31,6 +37,12 @@ import { ActivityService } from '../../../../core/services/activity';
 export class AttributeListComponent implements OnInit {
 
   attributes: IAttribute[] = []; //array of type attribute interface to hold the displayed records
+
+  // Controls whether the delete confirmation dialog is visible
+  showDeleteDialog = false;
+
+  // Stores the attribute selected for deletion
+  selectedAttribute: IAttribute | null = null;
 
   // Observable that provides attributes from the centralized store.
   attributes$: Observable<IAttribute[]>;
@@ -63,52 +75,119 @@ export class AttributeListComponent implements OnInit {
     this.attributes$ = this.store.attributes$;
   }
 
+  // Opens the confirmation dialog for the selected attribute.
+  openDeleteDialog(attribute: IAttribute): void {
+    if (!this.isAdmin) {
+      this.toastService.show('Access denied');
+      return;
+    }
+
+    this.selectedAttribute = attribute;
+    this.showDeleteDialog = true;
+  }
+  // Closes the dialog without deleting the attribute
+  cancelDelete(): void {
+    this.showDeleteDialog = false;
+    this.selectedAttribute = null;
+  }
+  // Deletes the attribute after the user confirms the action.
+  confirmDelete(): void {
+    if (!this.selectedAttribute || !this.isAdmin) {
+      return;
+    }
+
+    const attribute = this.selectedAttribute;
+
+    this.showDeleteDialog = false;
+    this.selectedAttribute = null;
+
+    this.attributeService.deleteAttribute(attribute.AttributeId).pipe(
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe({
+      next: () => {
+        // Record the successful delete operation
+        this.activityService.addActivity(
+          'Deleted',
+          attribute.AttributeName,
+          this.authService.currentUser?.username ?? 'Unknown'
+        );
+
+        this.toastService.show('Attribute deleted successfully');
+      },
+      error: error => {
+        console.error('Error deleting attribute:', error);
+        this.toastService.show('Unable to delete attribute');
+      }
+    });
+  }
+  get totalPages(): number {
+    return Math.max(1, Math.ceil(this.totalRecords / this.pageSize));
+  }
+  // Defines the columns displayed in the reusable DataTable
+  tableColumns: IDataTableColumn[] = [
+    { key: 'AttributeName', label: 'Attribute Name', sortable: true },
+    { key: 'BusinessUnitName', label: 'Business Unit', sortable: true },
+    { key: 'CustomerLocationName', label: 'Customer Location', sortable: true },
+    { key: 'CompanyName', label: 'Company', sortable: true },
+    { key: 'IsActive', label: 'Status', sortable: true },
+    { key: 'CreatedOn', label: 'Created On', sortable: true },
+    { key: 'UpdatedOn', label: 'Updated On', sortable: false },
+    { key: 'Actions', label: 'Action', sortable: false }
+  ];
+
+  // Maps Angular property names to the corresponding db.json properties
+  private sortFieldMapping: Record<string, string> = {
+    AttributeName: 'attribute_name',
+    BusinessUnitName: 'business_unit_name',
+    CustomerLocationName: 'customer_location_name',
+    CompanyName: 'company_name',
+    IsActive: 'is_active',
+    CreatedOn: 'created_on'
+  };
+  // Current pagination and sorting configuration
+  currentPage = 1;
+  pageSize = 5;
+  totalRecords = 0;
+  // Stores only the records belonging to the current table page.
+  tableRows: IAttribute[] = [];
+  currentSearchTerm = '';
+  sortColumn = 'AttributeName';
+  sortDirection: 'asc' | 'desc' = 'asc';
+
+  // Indicates whether the table data is currently loading.
+  isTableLoading = false;
+
+
   ngOnInit(): void {
 
-    // Fetch initial attributes from API and update the centralized store.
+    // Fetch all attributes to initialize the centralized store.
     this.attributeService.getAttributes().pipe(
       takeUntilDestroyed(this.destroyRef)
     ).subscribe({
       error: error => console.error('Error loading attributes:', error)
     });
 
-    this.searchControl.valueChanges.pipe( //pipe is used to chain multiple operators together to transform the data stream
+    // Listen for search input changes.
+    this.searchControl.valueChanges.pipe(
       startWith(this.searchControl.value),
+      debounceTime(300),
       distinctUntilChanged(),
-      tap(() => { // tap is rxjs operator used for performing side effects without modifying the data stream. Here, it increments the search version, sets isSearching to true, and clears any previous search error messages
+      tap(() => {
         this.searchVersion += 1;
         this.isSearching = true;
         this.searchError = '';
       }),
-      debounceTime(300),
-      switchMap(searchTerm => { // when new term arrives it clears the previous search
-        const searchVersion = this.searchVersion;
-        console.log(`Searching for: ${searchTerm} (version ${searchVersion})`);
-        return this.attributeService.searchAttributes(searchTerm).pipe(
-          catchError(error => {
-            console.error('Error searching attributes:', error);
-            this.searchError = 'Unable to search attributes. Please try again.';
-            this.changeDetector.markForCheck();
-            return EMPTY;
-          }),
-          finalize(() => {
-            if (searchVersion === this.searchVersion) {
-              this.isSearching = false;
-              this.changeDetector.markForCheck();
-            }
-          })
-        );
-      }),
       takeUntilDestroyed(this.destroyRef)
-    ).subscribe(attributes => {
+    ).subscribe(searchTerm => {
 
-      // Update the centralized store with the latest search results.
-      this.store.setAttributes(attributes);
+      // Store the latest search term.
+      this.currentSearchTerm = searchTerm.trim();
 
-      // Keep the existing local property updated for compatibility.
-      this.attributes = attributes;
+      // Return to the first page when searching.
+      this.currentPage = 1;
 
-      this.changeDetector.markForCheck();
+      // Load filtered and paginated records from the API.
+      this.loadPagedAttributes();
     });
   }
 
@@ -166,5 +245,62 @@ export class AttributeListComponent implements OnInit {
   // change the presentation without reloading the data
   setView(mode: 'table' | 'card'): void {
     this.viewMode = mode;
+  }
+
+  // Loads the requested page of attributes from the API.
+  loadPagedAttributes(): void {
+    this.isTableLoading = true;
+
+    const apiSortField = this.sortFieldMapping[this.sortColumn];
+
+    this.attributeService.getAttributesPage(
+      this.currentPage,
+      this.pageSize,
+      apiSortField,
+      this.sortDirection,
+      this.currentSearchTerm
+    ).pipe(
+      takeUntilDestroyed(this.destroyRef),
+      finalize(() => {
+        this.isTableLoading = false;
+        this.isSearching = false;
+        this.changeDetector.markForCheck();
+      })
+    ).subscribe({
+      next: response => {
+        this.tableRows = response.data;
+        this.totalRecords = response.totalRecords;
+
+        this.searchError = '';
+      },
+      error: error => {
+        console.error('Error loading paginated attributes:', error);
+
+        if (this.currentSearchTerm) {
+          this.searchError = 'Unable to search attributes please try again';
+        } else {
+          this.toastService.show('Unable to load attributes');
+        }
+      }
+    });
+  }
+  // Called when the user clicks a sortable column.
+  onTableSort(event: {
+    column: string;
+    direction: 'asc' | 'desc';
+  }): void {
+    this.sortColumn = event.column;
+    this.sortDirection = event.direction;
+
+    // Start from the first page after changing sorting.
+    this.currentPage = 1;
+
+    this.loadPagedAttributes();
+  }
+
+  // Called when the user changes the table page.
+  onTablePageChange(page: number): void {
+    this.currentPage = page;
+    this.loadPagedAttributes();
   }
 }

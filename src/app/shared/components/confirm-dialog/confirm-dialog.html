@@ -1,0 +1,38 @@
+@if (isOpen) {
+  <div class="dialog-backdrop" (click)="onCancel()">
+
+    <div
+      class="dialog-container"
+      role="alertdialog"
+      aria-modal="true"
+      aria-labelledby="dialog-title"
+      aria-describedby="dialog-message"
+      (click)="$event.stopPropagation()"
+    >
+
+      <h2 id="dialog-title">{{ title }}</h2>
+
+      <p id="dialog-message">{{ message }}</p>
+
+      <div class="dialog-actions">
+        <button
+          type="button"
+          class="cancel-button"
+          (click)="onCancel()"
+        >
+          Cancel
+        </button>
+
+        <button
+          type="button"
+          class="confirm-button"
+          (click)="onConfirm()"
+        >
+          Delete
+        </button>
+      </div>
+
+    </div>
+
+  </div>
+}

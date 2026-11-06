@@ -6,27 +6,30 @@
   </div>
 
   <!-- Summary Cards -->
-  <div class="summary-container">
-    <div class="summary-card total-card">
-      <h3>Total Attributes</h3>
-      <p class="summary-value">{{ totalAttributes }}</p>
-    </div>
+<!-- Summary Cards -->
+<div class="summary-container">
 
-    <div class="summary-card active-card">
-      <h3>Active Attributes</h3>
-      <p class="summary-value">{{ activeAttributes }}</p>
-    </div>
+  <app-card-wrapper>
+    <h3>Total Attributes</h3>
+    <p class="summary-value">{{ totalAttributes }}</p>
+  </app-card-wrapper>
 
-    <div class="summary-card inactive-card">
-      <h3>Inactive Attributes</h3>
-      <p class="summary-value">{{ inactiveAttributes }}</p>
-    </div>
-  </div>
+  <app-card-wrapper>
+    <h3>Active Attributes</h3>
+    <p class="summary-value">{{ activeAttributes }}</p>
+  </app-card-wrapper>
+
+  <app-card-wrapper>
+    <h3>Inactive Attributes</h3>
+    <p class="summary-value">{{ inactiveAttributes }}</p>
+  </app-card-wrapper>
+
+</div>
 
   <!-- Attribute Count Per Business Unit Bar Chart -->
-  <div class="chart-section">
-    <h2>Attribute Count Per Business Unit</h2>
-
+ <app-collapsible-section>
+    <h2 header>Attribute Count Per Business Unit</h2>
+    <div body>
     <div class="bar-chart-container">
       <svg
         [attr.viewBox]="'0 0 ' + chartWidth + ' ' + chartHeight"
@@ -127,12 +130,13 @@
 
       </svg>
     </div>
-  </div>
+    </div>
+</app-collapsible-section>
 
   <!-- Recent Activity -->
-  <div class="activity-section">
-    <h2>Recent Activity</h2>
-
+<app-collapsible-section>
+    <h2 header>Recent Activity</h2>
+<div body>
     @if (activities$ | async; as activities) {
       @if (activities.length > 0) {
         <div class="activity-list">
@@ -157,5 +161,6 @@
         <p class="empty-activity">No recent activity available</p>
       }
     }
-  </div>
+    </div>
+</app-collapsible-section>
 </section>

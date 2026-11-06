@@ -1,0 +1,73 @@
+<div class="table-container">
+  <table>
+    <thead>
+      <tr>
+        @for (column of columns; track column.key) {
+          <th>
+            @if (column.sortable) {
+              <button
+                type="button"
+                class="sort-button"
+                (click)="onSort(column)"
+              >
+                {{ column.label }}
+
+                @if (sortColumn === column.key) {
+                  {{ sortDirection === 'asc' ? '▲' : '▼' }}
+                }
+              </button>
+            } @else {
+              {{ column.label }}
+            }
+          </th>
+        }
+      </tr>
+    </thead>
+
+    <tbody>
+      @for (row of rows; track $index) {
+        @if (rowTemplate) {
+          <ng-container
+            [ngTemplateOutlet]="rowTemplate"
+            [ngTemplateOutletContext]="{ $implicit: row }"
+          />
+        } @else {
+          <tr>
+            @for (column of columns; track column.key) {
+              <td>{{ row[column.key] }}</td>
+            }
+          </tr>
+        }
+      } @empty {
+        <tr>
+          <td [attr.colspan]="columns.length">
+            No records found
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>
+
+<!-- Pagination -->
+<div class="pagination">
+  <button
+    type="button"
+    [disabled]="currentPage <= 1"
+    (click)="goToPage(currentPage - 1)"
+  >
+    Previous
+  </button>
+
+  <span>
+    Page {{ currentPage }} of {{ totalPages }}
+  </span>
+
+  <button
+    type="button"
+    [disabled]="currentPage >= totalPages"
+    (click)="goToPage(currentPage + 1)"
+  >
+    Next
+  </button>
+</div>

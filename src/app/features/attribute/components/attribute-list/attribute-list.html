@@ -48,71 +48,123 @@
       Card View
     </button>
   </div>
+@if (isTableLoading) {
+  <p class="search-status" role="status">
+    Loading attributes...
+  </p>
+}
+@if (viewMode === 'table') {
+  <app-data-table
+    [columns]="tableColumns"
+    [rows]="tableRows"
+    [currentPage]="currentPage"
+    [pageSize]="pageSize"
+    [totalRecords]="totalRecords"
+    [sortColumn]="sortColumn"
+    [sortDirection]="sortDirection"
+    (sortChange)="onTableSort($event)"
+    (pageChange)="onTablePageChange($event)"
+    [rowTemplate]="attributeRow"
+  />
 
-  @if (viewMode === 'table') {
-    <div class="table-container">
-      <table>
-        <thead>
-          <tr>
-            <th>Attribute Name</th>
-            <th>Business Unit</th>
-            <th>Customer Location</th>
-            <th>Company</th>
-            <th>Status</th>
-            <th>Created On</th>
-            <th>Updated On</th>
-            <th>Action</th>
-          </tr>
-        </thead>
+  <!-- Custom row template supplied to the reusable DataTable. -->
+  <ng-template #attributeRow let-attribute>
+    <tr>
+      <td>{{ attribute.AttributeName }}</td>
 
-        <tbody>
-          @for (attribute of (attributes$ | async) ?? []; track attribute.AttributeId) {
-            <tr>
-              <!-- {{}}interpolation - display ts value in html -->
+      <td>{{ attribute.BusinessUnitName }}</td>
 
-              <td>{{ attribute.AttributeName }}</td>
-              <td>{{ attribute.BusinessUnitName }}</td>
-              <td>{{ attribute.CustomerLocationName }}</td>
-              <td>{{ attribute.CompanyName }}</td>
-              <td>
-                <span [appActiveStatus]="attribute">
-                  {{ attribute.IsActive ? 'Active' : 'Inactive' }}
-                </span>
-              </td>
-              <td>{{ attribute.CreatedOn | relativeTime }}</td>
-              <td>{{ attribute.UpdatedOn | relativeTime }}</td>
-              <!-- value | pipe name -->
+      <td>{{ attribute.CustomerLocationName }}</td>
 
-              <td>
-                @if (isAdmin) {
-                  <div class="attribute-actions">
-                    <a class="action-link" [routerLink]="['/attributes', attribute.AttributeId, 'edit']">Edit</a>
-                    <button class="action-link delete-action" type="button" (click)="deleteAttribute(attribute)">Delete</button>
-                  </div>
-                } @else {
-                  <div class="attribute-actions">
-                    <span class="disabled-action" aria-disabled="true">Edit</span>
-                    <span class="disabled-action" aria-disabled="true">Delete</span>
-                  </div>
-                }
-              </td>
-            </tr>
-          } @empty {
-            <tr>
-              <td colspan="9">No attributes found</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
-  } @else {
-    <div class="card-grid">
-      @for (attri of (attributes$ | async) ?? []; track attri.AttributeId) {
-        <app-attribute-card [attribute]="attri" (delete)="deleteAttribute($event)" />
-        <!-- [attribute] on the left refers to an input property on AttributeCardComponent -->
-      } @empty {
-        <p>No attributes found</p>
-      }
-    </div>
-  }
+      <td>{{ attribute.CompanyName }}</td>
+
+      <td>
+        <span [appActiveStatus]="attribute">
+          {{ attribute.IsActive ? 'Active' : 'Inactive' }}
+        </span>
+      </td>
+
+      <td>{{ attribute.CreatedOn | relativeTime }}</td>
+
+      <td>{{ attribute.UpdatedOn | relativeTime }}</td>
+
+      <td>
+        @if (isAdmin) {
+          <div class="attribute-actions">
+            <a
+              class="action-link"
+              [routerLink]="[
+                '/attributes',
+                attribute.AttributeId,
+                'edit'
+              ]"
+            >
+              Edit
+            </a>
+
+            <button
+              class="action-link delete-action"
+              type="button"
+              (click)="openDeleteDialog(attribute)"
+            >
+              Delete
+            </button>
+          </div>
+        } @else {
+          <div class="attribute-actions">
+            <span class="disabled-action" aria-disabled="true">
+              Edit
+            </span>
+
+            <span class="disabled-action" aria-disabled="true">
+              Delete
+            </span>
+          </div>
+        }
+      </td>
+    </tr>
+  </ng-template>
+}@else {
+  <div class="card-grid">
+    @for (attri of tableRows; track attri.AttributeId) {
+      <app-attribute-card
+        [attribute]="attri"
+        (delete)="openDeleteDialog($event)"
+      />
+    } @empty {
+      <p>No attributes found</p>
+    }
+  </div>
+
+  <!-- Pagination for card view -->
+  <div class="pagination">
+    <button
+      type="button"
+      [disabled]="currentPage <= 1"
+      (click)="onTablePageChange(currentPage - 1)"
+    >
+      Previous
+    </button>
+
+    <span>Page {{ currentPage }} of {{ totalPages }}</span>
+
+    <button
+      type="button"
+      [disabled]="currentPage >= totalPages"
+      (click)="onTablePageChange(currentPage + 1)"
+    >
+      Next
+    </button>
+  </div>
+}
+
+<!-- Reusable Delete Confirmation Dialog -->
+<app-confirm-dialog
+  [isOpen]="showDeleteDialog"
+  title="Delete Attribute"
+  [message]="'Are you sure you want to delete ' + (selectedAttribute?.AttributeName ?? 'this attribute') + '?'"
+  (confirmed)="confirmDelete()"
+  (cancelled)="cancelDelete()"
+/>
+
 </section>

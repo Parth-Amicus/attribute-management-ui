@@ -1,0 +1,25 @@
+<section class="collapsible-section">
+
+  <!-- Header content is projected here -->
+  <div class="section-header">
+
+    <ng-content select="[header]"></ng-content>
+
+    <button
+      type="button"
+      class="toggle-button"
+      (click)="toggleSection()"
+      [attr.aria-expanded]="isExpanded()"
+      aria-label="Toggle section"
+    >
+      {{ isExpanded() ? '−' : '+' }}
+    </button>
+
+  </div>
+
+  <!-- Body content is projected here -->
+  <div class="section-body" [hidden]="!isExpanded()">
+    <ng-content select="[body]"></ng-content>
+  </div>
+
+</section>

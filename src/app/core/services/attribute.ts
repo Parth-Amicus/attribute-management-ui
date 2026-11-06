@@ -8,6 +8,24 @@ import { AttributeDTO } from '../../interface/attribute.dto';
 import { MappingService } from './mapping';
 import { environment } from '../../../environments/environment';
 import { AppStateStore } from './app-state-store';
+
+// Represents the paginated response returned by json-server v1
+export interface IJsonServerPage<T> { //IJsonServerPage describe the actual response from json 
+  first: number;
+  prev: number | null;
+  next: number | null;
+  last: number;
+  pages: number;
+  items: number;
+  data: T[];
+}
+
+// Represents the data returned to the DataTable component
+export interface IAttributePage { // IAttribute represnets the attribute interface
+  data: IAttribute[];
+  totalRecords: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -38,66 +56,104 @@ export class AttributeService {
   ) { }
 
   // GET: Return all attributes from the API
-getAttributes(): Observable<IAttribute[]> {
+  getAttributes(): Observable<IAttribute[]> {
 
-  return this.http.get<AttributeDTO[]>(this.apiUrl).pipe(
+    return this.http.get<AttributeDTO[]>(this.apiUrl).pipe(
 
-    map(attributes =>
-      attributes.map(attribute =>
-        this.mappingService.toAttribute(attribute)
-      )
-    ),
+      map(attributes =>
+        attributes.map(attribute =>
+          this.mappingService.toAttribute(attribute)
+        )
+      ),
 
-    map(attributes => {
-      this.store.setAttributes(attributes);
-      return attributes;
-    })
+      map(attributes => {
+        this.store.setAttributes(attributes);
+        return attributes;
+      })
 
-  );
-}
+    );
+  }
+
+  getAttributesPage(
+    page: number,
+    pageSize: number,
+    sortField: string,
+    sortDirection: 'asc' | 'desc',
+    searchTerm: string = ''
+  ): Observable<IAttributePage> {
+
+    const sortValue = sortDirection === 'desc'
+      ? `-${sortField}`
+      : sortField;
+
+    let params = new HttpParams()
+      .set('_page', page)
+      .set('_per_page', pageSize)
+      .set('_sort', sortValue);
+
+    // Apply server-side filtering when a search term is provided.
+    if (searchTerm.trim()) {
+      params = params.set(
+        'attribute_name:contains',
+        searchTerm.trim()
+      );
+    }
+
+    return this.http.get<IJsonServerPage<AttributeDTO>>(
+      this.apiUrl,
+      { params }
+    ).pipe(
+      map(response => ({
+        data: response.data.map(attribute =>
+          this.mappingService.toAttribute(attribute)
+        ),
+        totalRecords: response.items
+      }))
+    );
+  }
 
   // GET: Find one attribute by its ID
-  getAttributeById(id: number| string): Observable<IAttribute> {
+  getAttributeById(id: number | string): Observable<IAttribute> {
     return this.http.get<AttributeDTO>(`${this.apiUrl}/${id}`).pipe(
       map(attribute => this.mappingService.toAttribute(attribute))
     );
   }
 
   // POST: Add a new attribute
-addAttribute(attribute: IAttribute): Observable<IAttribute> {
+  addAttribute(attribute: IAttribute): Observable<IAttribute> {
 
-  return this.http.get<AttributeDTO[]>(this.apiUrl).pipe(
+    return this.http.get<AttributeDTO[]>(this.apiUrl).pipe(
 
-    map(attributes => {
-      const numericIds = attributes
-        .map(item => Number(item.id))
-        .filter(id => Number.isInteger(id) && id > 0);
+      map(attributes => {
+        const numericIds = attributes
+          .map(item => Number(item.id))
+          .filter(id => Number.isInteger(id) && id > 0);
 
-      const latestId = Math.max(0, ...numericIds);
+        const latestId = Math.max(0, ...numericIds);
 
-      return latestId + 1;
-    }),
+        return latestId + 1;
+      }),
 
-    switchMap(nextId => {
-      const dto = this.mappingService.toDTO(attribute);
-      dto.id = nextId;
+      switchMap(nextId => {
+        const dto = this.mappingService.toDTO(attribute);
+        dto.id = nextId;
 
-      return this.http.post<AttributeDTO>(this.apiUrl, dto);
-    }),
+        return this.http.post<AttributeDTO>(this.apiUrl, dto);
+      }),
 
-    map(response => this.mappingService.toAttribute(response)),
+      map(response => this.mappingService.toAttribute(response)),
 
-    map(newAttribute => {
-      this.store.setAttributes([
-        ...this.store.currentState.attributes,
-        newAttribute
-      ]);
+      map(newAttribute => {
+        this.store.setAttributes([
+          ...this.store.currentState.attributes,
+          newAttribute
+        ]);
 
-      return newAttribute;
-    })
+        return newAttribute;
+      })
 
-  );
-}
+    );
+  }
 
   // PUT: Replace an existing attribute with its edited version
   updateAttribute(updatedAttribute: IAttribute): Observable<IAttribute> {
@@ -112,23 +168,23 @@ addAttribute(attribute: IAttribute): Observable<IAttribute> {
   }
 
   // DELETE: Remove an attribute by its ID
-deleteAttribute(id: number | string): Observable<void> {
+  deleteAttribute(id: number | string): Observable<void> {
 
-  return this.http.delete<void>(`${this.apiUrl}/${id}`).pipe(
+    return this.http.delete<void>(`${this.apiUrl}/${id}`).pipe(
 
-    map(() => {
+      map(() => {
 
-      const updatedAttributes =
-        this.store.currentState.attributes.filter(
-          attribute => attribute.AttributeId !== id
-        );
+        const updatedAttributes =
+          this.store.currentState.attributes.filter(
+            attribute => attribute.AttributeId !== id
+          );
 
-      this.store.setAttributes(updatedAttributes);
+        this.store.setAttributes(updatedAttributes);
 
-    })
+      })
 
-  );
-}
+    );
+  }
 
   searchAttributes(searchTerm: string): Observable<IAttribute[]> {
     const term = searchTerm.trim();
@@ -146,4 +202,6 @@ deleteAttribute(id: number | string): Observable<void> {
       )
     );
   }//The inner map() loops through every DTO in the array and converts it into an IAttribute whereas the outer map() wraps the entire array of converted IAttributes into an Observable that can be subscribed to by the component
+
+
 } 

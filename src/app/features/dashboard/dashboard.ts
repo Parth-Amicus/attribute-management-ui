@@ -5,10 +5,13 @@ import { AttributeService } from '../../core/services/attribute';
 import { IAttribute } from '../../interface/attribute.interface';
 import { ActivityService, IActivity } from '../../core/services/activity';
 import { AsyncPipe, DatePipe } from '@angular/common';
+import { CardWrapperComponent } from '../../shared/components/card-wrapper/card-wrapper';
+import { CollapsibleSectionComponent } from '../../shared/components/collapsible-section/collapsible-section';
+
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [AsyncPipe, DatePipe],
+  imports: [AsyncPipe, DatePipe, CardWrapperComponent, CollapsibleSectionComponent],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
   changeDetection: ChangeDetectionStrategy.OnPush

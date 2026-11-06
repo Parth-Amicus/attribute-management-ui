@@ -95,18 +95,6 @@
       "created_by": "Admin",
       "updated_on": "2025-12-02",
       "updated_by": "Neha"
-    },
-    {
-      "id": "4PTA46qyavw",
-      "attribute_name": "Test Attribute",
-      "business_unit_name": "Finance",
-      "customer_location_name": "Mumbai",
-      "company_name": "Abc Technology",
-      "is_active": true,
-      "created_on": "2026-11-05T07:19:54.547Z",
-      "created_by": "Current User",
-      "updated_on": "2026-11-05T07:19:54.547Z",
-      "updated_by": "Current User"
     }
   ],
   "business_units": [
