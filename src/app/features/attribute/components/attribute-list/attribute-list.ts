@@ -8,7 +8,7 @@ import { ActiveStatusDirective } from '../../../../shared/directives/active-stat
 import { RelativeTimePipe } from '../../../../shared/pipes/relative-time-pipe';
 import { Router, RouterLink } from '@angular/router'; //lets user to navigate to different url - used in html
 import { FormControl } from '@angular/forms';
-import { debounceTime, distinctUntilChanged, finalize, startWith, tap } from 'rxjs';
+import { debounceTime, distinctUntilChanged, finalize, of, startWith, switchMap, tap } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 import { AppStateStore } from '../../../../core/services/app-state-store';
 import { Observable } from 'rxjs';
@@ -126,14 +126,14 @@ export class AttributeListComponent implements OnInit {
   }
   // Defines the columns displayed in the reusable DataTable
   tableColumns: IDataTableColumn[] = [
-    { key: 'AttributeName', label: 'Attribute Name', sortable: true },
-    { key: 'BusinessUnitName', label: 'Business Unit', sortable: true },
-    { key: 'CustomerLocationName', label: 'Customer Location', sortable: true },
-    { key: 'CompanyName', label: 'Company', sortable: true },
-    { key: 'IsActive', label: 'Status', sortable: true },
-    { key: 'CreatedOn', label: 'Created On', sortable: true },
-    { key: 'UpdatedOn', label: 'Updated On', sortable: false },
-    { key: 'Actions', label: 'Action', sortable: false }
+    { key: 'AttributeName', label: 'Attribute Name', sortable: true, width: '20%' },
+    { key: 'BusinessUnitName', label: 'Business Unit', sortable: true, width: '14%' },
+    { key: 'CustomerLocationName', label: 'Customer Location', sortable: true, width: '16%' },
+    { key: 'CompanyName', label: 'Company', sortable: true, width: '14%' },
+    { key: 'IsActive', label: 'Status', sortable: true, width: '9%' },
+    { key: 'CreatedOn', label: 'Created On', sortable: true, width: '10%' },
+    { key: 'UpdatedOn', label: 'Updated On', sortable: false, width: '9%' },
+    { key: 'Actions', label: 'Action', sortable: false, width: '8%' }
   ];
 
   // Maps Angular property names to the corresponding db.json properties
@@ -261,6 +261,16 @@ export class AttributeListComponent implements OnInit {
       this.sortDirection,
       this.currentSearchTerm
     ).pipe(
+      switchMap(response => response.totalRecords > 50
+        ? this.attributeService.getAttributesPage(
+          1,
+          response.totalRecords,
+          apiSortField,
+          this.sortDirection,
+          this.currentSearchTerm
+        )
+        : of(response)
+      ),
       takeUntilDestroyed(this.destroyRef),
       finalize(() => {
         this.isTableLoading = false;

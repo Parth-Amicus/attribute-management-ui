@@ -1,73 +1,128 @@
-<div class="table-container">
-  <table>
-    <thead>
-      <tr>
-        @for (column of columns; track column.key) {
-          <th>
-            @if (column.sortable) {
-              <button
-                type="button"
-                class="sort-button"
-                (click)="onSort(column)"
-              >
+@if (isVirtualScrollEnabled) {
+  <div class="table-container virtual-table-container">
+    <table class="virtual-table-header">
+      <thead>
+        <tr>
+          @for (column of columns; track column.key) {
+            <th [style.width]="column.width ?? null">
+              @if (column.sortable) {
+                <button
+                  type="button"
+                  class="sort-button"
+                  (click)="onSort(column)"
+                >
+                  {{ column.label }}
+
+                  @if (sortColumn === column.key) {
+                    {{ sortDirection === 'asc' ? '▲' : '▼' }}
+                  }
+                </button>
+              } @else {
                 {{ column.label }}
+              }
+            </th>
+          }
+        </tr>
+      </thead>
+    </table>
 
-                @if (sortColumn === column.key) {
-                  {{ sortDirection === 'asc' ? '▲' : '▼' }}
-                }
-              </button>
+    <cdk-virtual-scroll-viewport
+      class="virtual-scroll-viewport"
+      [itemSize]="56"
+      [minBufferPx]="224"
+      [maxBufferPx]="336"
+    >
+      <table class="virtual-table-body">
+        <tbody>
+          <ng-container *cdkVirtualFor="let row of rows; trackBy: trackRow">
+            @if (rowTemplate) {
+              <ng-container
+                [ngTemplateOutlet]="rowTemplate"
+                [ngTemplateOutletContext]="{ $implicit: row }"
+              />
             } @else {
-              {{ column.label }}
+              <tr>
+                @for (column of columns; track column.key) {
+                  <td>{{ row[column.key] }}</td>
+                }
+              </tr>
             }
-          </th>
-        }
-      </tr>
-    </thead>
+          </ng-container>
+        </tbody>
+      </table>
+    </cdk-virtual-scroll-viewport>
+  </div>
+} @else {
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          @for (column of columns; track column.key) {
+            <th [style.width]="column.width ?? null">
+              @if (column.sortable) {
+                <button
+                  type="button"
+                  class="sort-button"
+                  (click)="onSort(column)"
+                >
+                  {{ column.label }}
 
-    <tbody>
-      @for (row of rows; track row.AttributeId) {
-        @if (rowTemplate) {
-          <ng-container
-            [ngTemplateOutlet]="rowTemplate"
-            [ngTemplateOutletContext]="{ $implicit: row }"
-          />
-        } @else {
+                  @if (sortColumn === column.key) {
+                    {{ sortDirection === 'asc' ? '▲' : '▼' }}
+                  }
+                </button>
+              } @else {
+                {{ column.label }}
+              }
+            </th>
+          }
+        </tr>
+      </thead>
+
+      <tbody>
+        @for (row of rows; track row.AttributeId) {
+          @if (rowTemplate) {
+            <ng-container
+              [ngTemplateOutlet]="rowTemplate"
+              [ngTemplateOutletContext]="{ $implicit: row }"
+            />
+          } @else {
+            <tr>
+              @for (column of columns; track column.key) {
+                <td [style.width]="column.width ?? null">{{ row[column.key] }}</td>
+              }
+            </tr>
+          }
+        } @empty {
           <tr>
-            @for (column of columns; track column.key) {
-              <td>{{ row[column.key] }}</td>
-            }
+            <td [attr.colspan]="columns.length">
+              No records found
+            </td>
           </tr>
         }
-      } @empty {
-        <tr>
-          <td [attr.colspan]="columns.length">
-            No records found
-          </td>
-        </tr>
-      }
-    </tbody>
-  </table>
-</div>
+      </tbody>
+    </table>
+  </div>
 
-<!-- Pagination -->
-<div class="pagination">
-  <button
-    type="button"
-    [disabled]="currentPage <= 1"
-    (click)="goToPage(currentPage - 1)"
-  >
-    Previous
-  </button>
+  <div class="pagination">
+    <button
+      type="button"
+      [disabled]="currentPage <= 1"
+      (click)="goToPage(currentPage - 1)"
+    >
+      Previous
+    </button>
 
-  <span>
-    Page {{ currentPage }} of {{ totalPages }}
-  </span>
+    <span>
+      Page {{ currentPage }} of {{ totalPages }}
+    </span>
 
-  <button
-    type="button"
-    [disabled]="currentPage >= totalPages"
-    (click)="goToPage(currentPage + 1)"
-  >
-    Next
-  </button>
-</div>
+    <button
+      type="button"
+      [disabled]="currentPage >= totalPages"
+      (click)="goToPage(currentPage + 1)"
+    >
+      Next
+    </button>
+  </div>
+}

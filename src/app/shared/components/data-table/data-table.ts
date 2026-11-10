@@ -1,16 +1,27 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, TemplateRef } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
+import {
+  CdkFixedSizeVirtualScroll,
+  CdkVirtualForOf,
+  CdkVirtualScrollViewport
+} from '@angular/cdk/scrolling';
 
 export interface IDataTableColumn {
   key: string;
   label: string;
   sortable?: boolean;
+  width?: string;
 }
 
 @Component({
   selector: 'app-data-table',
   standalone: true,
-  imports: [NgTemplateOutlet],
+  imports: [
+    NgTemplateOutlet,
+    CdkFixedSizeVirtualScroll,
+    CdkVirtualForOf,
+    CdkVirtualScrollViewport
+  ],
   templateUrl: './data-table.html',
   styleUrl: './data-table.css',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -46,6 +57,14 @@ export class DataTableComponent {
 
   get totalPages(): number {
     return Math.max(1, Math.ceil(this.totalRecords / this.pageSize));
+  }
+
+  get isVirtualScrollEnabled(): boolean {
+    return this.rows.length > 50;
+  }
+
+  trackRow(_index: number, row: { AttributeId: number | string }): number | string {
+    return row.AttributeId;
   }
 
   onSort(column: IDataTableColumn): void {

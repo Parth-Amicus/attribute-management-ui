@@ -78,25 +78,37 @@
   <!-- Custom row template supplied to the reusable DataTable. -->
   <ng-template #attributeRow let-attribute>
     <tr>
-      <td>{{ attribute.AttributeName }}</td>
+      <td
+        class="attribute-text-cell"
+        style="width: 20%"
+        [title]="attribute.AttributeName"
+      >
+        {{ attribute.AttributeName }}
+      </td>
 
-      <td>{{ attribute.BusinessUnitName }}</td>
+      <td
+        class="attribute-text-cell"
+        style="width: 14%"
+        [title]="attribute.BusinessUnitName"
+      >
+        {{ attribute.BusinessUnitName }}
+      </td>
 
-      <td>{{ attribute.CustomerLocationName }}</td>
+      <td style="width: 16%">{{ attribute.CustomerLocationName }}</td>
 
-      <td>{{ attribute.CompanyName }}</td>
+      <td style="width: 14%">{{ attribute.CompanyName }}</td>
 
-      <td>
+      <td style="width: 9%">
         <span [appActiveStatus]="attribute">
           {{ attribute.IsActive ? 'Active' : 'Inactive' }}
         </span>
       </td>
 
-      <td>{{ attribute.CreatedOn | relativeTime }}</td>
+      <td style="width: 10%">{{ attribute.CreatedOn | relativeTime }}</td>
 
-      <td>{{ attribute.UpdatedOn | relativeTime }}</td>
+      <td style="width: 9%">{{ attribute.UpdatedOn | relativeTime }}</td>
 
-      <td>
+      <td style="width: 8%">
         @if (isAdmin) {
           <div class="attribute-actions">
             <a
