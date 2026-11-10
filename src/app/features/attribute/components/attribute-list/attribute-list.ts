@@ -9,7 +9,6 @@ import { RelativeTimePipe } from '../../../../shared/pipes/relative-time-pipe';
 import { Router, RouterLink } from '@angular/router'; //lets user to navigate to different url - used in html
 import { FormControl } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, finalize, of, startWith, switchMap, tap } from 'rxjs';
-import { AsyncPipe } from '@angular/common';
 import { AppStateStore } from '../../../../core/services/app-state-store';
 import { Observable } from 'rxjs';
 import { AuthService } from '../../../../core/services/auth';
@@ -27,7 +26,6 @@ import { DataTableComponent } from '../../../../shared/components/data-table/dat
     AttributeCardComponent,
     ActiveStatusDirective,
     RelativeTimePipe,
-    AsyncPipe,
     ConfirmDialogComponent,
     DataTableComponent
   ],

@@ -1,9 +1,6 @@
 
 import { Routes } from '@angular/router';
 
-import { DashboardComponent } from './features/dashboard/dashboard';
-import { PageNotFoundComponent } from './shared/components/page-not-found/page-not-found';
-import { LoginComponent } from './features/auth/login/login';
 import { authGuard } from './core/guards/auth.guard';
 
 //Works on first match
@@ -22,14 +19,18 @@ export const routes: Routes = [
 },
   {
     path: 'dashboard',
-    component: DashboardComponent
-  },
-  {
+  loadComponent: () =>
+    import('./features/dashboard/dashboard').then(module => module.DashboardComponent)
+},
+{
   path: 'login',
-  component: LoginComponent
-  },
-  {
-    path: '**',
-    component: PageNotFoundComponent
-  }
+  loadComponent: () =>
+    import('./features/auth/login/login').then(module => module.LoginComponent)
+},
+{
+  path: '**',
+  loadComponent: () =>
+    import('./shared/components/page-not-found/page-not-found')
+      .then(module => module.PageNotFoundComponent)
+}
 ];
