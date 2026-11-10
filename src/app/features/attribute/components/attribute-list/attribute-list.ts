@@ -285,6 +285,11 @@ export class AttributeListComponent implements OnInit {
       }
     });
   }
+
+  refreshAttributes(): void {
+    this.loadPagedAttributes();
+  }
+
   // Called when the user clicks a sortable column.
   onTableSort(event: {
     column: string;

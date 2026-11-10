@@ -25,7 +25,7 @@
     </thead>
 
     <tbody>
-      @for (row of rows; track $index) {
+      @for (row of rows; track row.AttributeId) {
         @if (rowTemplate) {
           <ng-container
             [ngTemplateOutlet]="rowTemplate"

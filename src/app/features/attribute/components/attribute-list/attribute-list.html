@@ -2,6 +2,14 @@
   <div class="page-head">
     <h1>Attribute Management</h1>
     <div class="page-actions">
+      <button
+        class="refresh-button"
+        type="button"
+        [disabled]="isTableLoading"
+        (click)="refreshAttributes()"
+      >
+        Refresh
+      </button>
       @if (isAdmin) {
         <a class="add-attribute-link" routerLink="/attributes/add">Add Attribute</a>
       }

@@ -220,6 +220,27 @@ td a:hover,
     transform 140ms ease;
 }
 
+.refresh-button {
+  min-height: 40px;
+  padding: 9px 15px;
+  border: 1px solid #d5ddd7;
+  border-radius: 7px;
+  background: #fff;
+  color: #34443d;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.refresh-button:hover:not(:disabled) {
+  background: #f7f8f6;
+}
+
+.refresh-button:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
 .add-attribute-link:hover {
   border-color: #254b6b;
   background: #254b6b;
