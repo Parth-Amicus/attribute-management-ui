@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../../core/services/auth';
@@ -9,7 +9,8 @@ import { IdleTimeoutService } from '../../../core/services/idle-timeout';
   standalone: true,
   imports: [FormsModule], // forms module is imported to use ngModel for two-way data binding
   templateUrl: './login.html',
-  styleUrl: './login.css'
+  styleUrl: './login.css',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LoginComponent {
  

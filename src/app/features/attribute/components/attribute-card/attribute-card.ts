@@ -1,5 +1,5 @@
 
-import { Component, Input, OnInit, OnChanges, OnDestroy, SimpleChanges } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnInit, OnChanges, OnDestroy, SimpleChanges } from '@angular/core';
 import { IAttribute } from '../../../../interface/attribute.interface';
 import { ActiveStatusDirective } from '../../../../shared/directives/active-status';
 import { RelativeTimePipe } from '../../../../shared/pipes/relative-time-pipe';
@@ -11,7 +11,8 @@ import { Output, EventEmitter } from '@angular/core';
   standalone: true,
   imports: [RouterLink, ActiveStatusDirective, RelativeTimePipe],
   templateUrl: './attribute-card.html',
-  styleUrl: './attribute-card.css'
+  styleUrl: './attribute-card.css',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AttributeCardComponent {
   @Input({ required: true }) attribute!: IAttribute; // ! ensures that this value is not going to be null so let angular access it 

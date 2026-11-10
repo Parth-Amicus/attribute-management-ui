@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, TemplateRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, TemplateRef } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
 
 export interface IDataTableColumn {
@@ -12,7 +12,8 @@ export interface IDataTableColumn {
   standalone: true,
   imports: [NgTemplateOutlet],
   templateUrl: './data-table.html',
-  styleUrl: './data-table.css'
+  styleUrl: './data-table.css',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DataTableComponent {
 

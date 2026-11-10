@@ -1,5 +1,5 @@
 
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
 import { AppStateStore } from '../../../core/services/app-state-store';
 
@@ -8,7 +8,8 @@ import { AppStateStore } from '../../../core/services/app-state-store';
   standalone: true,
   imports: [AsyncPipe],
   templateUrl: './loader.html',
-  styleUrl: './loader.css'
+  styleUrl: './loader.css',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LoaderComponent {
 

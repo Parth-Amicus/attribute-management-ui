@@ -1,5 +1,5 @@
 
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -17,7 +17,8 @@ import { IAttribute } from '../../../../interface/attribute.interface';
   standalone: true,
   imports: [FormsModule, RouterLink, AsyncPipe],
   templateUrl: './edit-attribute.html',
-  styleUrl: './edit-attribute.css'
+  styleUrl: './edit-attribute.css',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EditAttributeComponent implements OnInit {
   @ViewChild('editForm') editForm?: NgForm; // gives ts class access to the form in html
@@ -52,7 +53,8 @@ export class EditAttributeComponent implements OnInit {
     private lookupService: LookupService,
     private store: AppStateStore,
     private activityService: ActivityService,
-    private authService: AuthService
+    private authService: AuthService,
+    private changeDetector: ChangeDetectorRef
   ) {
     this.lookups$ = this.store.lookups$;
   }
@@ -83,6 +85,7 @@ export class EditAttributeComponent implements OnInit {
         );
 
         this.selectedBusinessId = businessUnit?.BusinessId ?? null;
+        this.changeDetector.markForCheck();
 
         // Load locations only after the business units are available
         if (this.selectedBusinessId !== null) {
@@ -107,6 +110,7 @@ export class EditAttributeComponent implements OnInit {
         );
 
         this.selectedCompanyId = company?.CompanyId ?? null;
+        this.changeDetector.markForCheck();
       },
       error: error => {
         console.error('Failed to load companies:', error);
@@ -130,6 +134,7 @@ export class EditAttributeComponent implements OnInit {
 
         this.selectedCustomerLocationId =
           location?.CustomerLocationId ?? null;
+        this.changeDetector.markForCheck();
       },
       error: error => {
         console.error('Failed to load customer locations:', error);

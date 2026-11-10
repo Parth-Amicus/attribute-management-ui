@@ -1,5 +1,5 @@
 
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import {
   AbstractControl,
   FormControl,
@@ -23,7 +23,8 @@ import { attributeNameValidator } from '../../../../validator/attribute-name.val
   standalone: true,
   imports: [RouterLink, ReactiveFormsModule, AsyncPipe], //router link helps to navigate to diff url
   templateUrl: './add-attribute.html',
-  styleUrl: './add-attribute.css'
+  styleUrl: './add-attribute.css',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AddAttributeComponent implements OnInit, OnDestroy {
 

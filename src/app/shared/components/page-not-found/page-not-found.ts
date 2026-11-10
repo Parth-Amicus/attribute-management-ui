@@ -1,5 +1,5 @@
 
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 @Component({
@@ -7,6 +7,7 @@ import { RouterLink } from '@angular/router';
   standalone: true,
   imports: [RouterLink],
   templateUrl: './page-not-found.html',
-  styleUrl: './page-not-found.css'
+  styleUrl: './page-not-found.css',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PageNotFoundComponent {}

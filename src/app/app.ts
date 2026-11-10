@@ -1,5 +1,5 @@
 
-import { Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 import { ToastComponent } from './shared/components/toast/toast';
 import { LoaderComponent } from './shared/components/loader/loader';
@@ -19,6 +19,7 @@ import { ActiveStatusDirective } from './shared/directives/active-status';
   styleUrl: './app.css',
   templateUrl: './app.html',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class App {
 

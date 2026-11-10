@@ -258,3 +258,23 @@ Mutation requests can be retried safely when the API supports mechanisms such as
 Immutability creates new object/array references instead of modifying existing state.
 This helps Angular change detection and RxJS detect updates, prevents stale UI,
 and makes state changes easier to track and debug.
+
+## OnPush Change Detection
+
+All components use `ChangeDetectionStrategy.OnPush`. Angular checks these views
+when template events or input changes occur, or when a signal/`AsyncPipe` marks
+the view for checking. State changed by a manual subscription needs an explicit
+notification:
+
+- **Dashboard:** An HTTP subscription updates the attributes and summary values.
+  Without `markForCheck()`, the OnPush view can retain the old summary and chart.
+  The callback marks the view after recalculating the summary.
+- **Attribute list:** The paged HTTP response updates the table rows, totals, and
+  loading/search status. These are plain component fields, so `finalize()` calls
+  `markForCheck()` after the request completes.
+- **Edit attribute:** Lookup HTTP callbacks set the selected business unit,
+  company, and customer location IDs. Those assignments happen outside template
+  events, so each callback calls `markForCheck()` to refresh the form controls.
+
+The other components are updated through template events, changed inputs,
+signals, or `AsyncPipe`, which already notify OnPush views.

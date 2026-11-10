@@ -1,10 +1,11 @@
-import { Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 
 @Component({
   selector: 'app-collapsible-section',
   standalone: true,
   templateUrl: './collapsible-section.html',
-  styleUrl: './collapsible-section.css'
+  styleUrl: './collapsible-section.css',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CollapsibleSectionComponent {
 

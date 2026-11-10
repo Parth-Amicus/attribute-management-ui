@@ -1,5 +1,5 @@
 
-import { ChangeDetectorRef, Component, DestroyRef, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, DestroyRef, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AttributeService } from '../../../../core/services/attribute';
 import { IAttribute } from '../../../../interface/attribute.interface';
@@ -32,7 +32,8 @@ import { DataTableComponent } from '../../../../shared/components/data-table/dat
     DataTableComponent
   ],
   templateUrl: './attribute-list.html', // html gets access to attributes from here
-  styleUrl: './attribute-list.css'
+  styleUrl: './attribute-list.css',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AttributeListComponent implements OnInit {
 
