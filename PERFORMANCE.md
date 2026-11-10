@@ -7,14 +7,25 @@ This document records the performance baseline of the Attribute Management appli
 
 ## 2. Lighthouse Results
 
-The Lighthouse audit will be performed after implementing the performance optimizations.
+The repository contains one set of reported scores, but no Lighthouse report,
+run date, browser/device profile, or pre-optimization scores. The available
+figures are therefore recorded as reported results, not as a reproducible
+before/after comparison.
 
-| Category | Score
-|---|---:|
-| Performance | 91 |
-| Accessibility | 92 |
-| Best Practices | 100 | 
-| SEO | 82 | 
+| Category | Before | After (reported) |
+|---|---:|---:|
+| Performance | Not recorded | 91 |
+| Accessibility | Not recorded | 92 |
+| Best Practices | Not recorded | 100 |
+| SEO | Not recorded | 82 |
+
+Do not interpret the missing baseline as a zero score or infer that the
+optimizations caused a particular score change. To establish a comparable
+baseline, build and serve the same production revision, then run Lighthouse
+using the same browser version, device emulation, network throttling, and
+route. Save both reports with those environment details before claiming a
+before/after improvement. Lighthouse is not currently configured as an npm
+script in this repository.
 
 ## 3. Attribute List Refresh and DOM Reuse
 
@@ -30,7 +41,14 @@ The attribute-list test generates 205 mock attributes and verifies that the view
 
 ## 5. Production Bundle Optimization
 
-The production bundle was measured with `ng build --stats-json`. The login, dashboard, and not-found routes previously imported their components eagerly. They now use Angular's `loadComponent`, so these pages are loaded on navigation. The attribute routes were already lazy-loaded and remain so. The unused `AsyncPipe` import was also removed from `AttributeListComponent`.
+The recorded production bundle comparison used `ng build --stats-json`. The
+login, dashboard, and not-found routes previously imported their components
+eagerly. They now use Angular's `loadComponent`, so these pages are loaded on
+navigation. The attribute routes were already lazy-loaded and remain so. The
+unused `AsyncPipe` import was also removed from `AttributeListComponent`.
+
+The measurements below are the comparison recorded for that optimization;
+they are not a fresh measurement of every subsequent repository revision.
 
 | Browser bundle metric | Before | After | Change |
 |---|---:|---:|---:|

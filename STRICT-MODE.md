@@ -1,8 +1,15 @@
 # Strict TypeScript mode
 
 The shared TypeScript configuration enables `strict`, `noImplicitAny`, and
-`strictNullChecks`. The application build passed without weakening types or
-using `any` or non-null assertions.
+`strictNullChecks`, as well as `noImplicitOverride`,
+`noPropertyAccessFromIndexSignature`, `noImplicitReturns`, and
+`noFallthroughCasesInSwitch`. Angular compiler options also enable strict
+injection parameters and strict input access modifiers. These settings are in
+`tsconfig.json` and apply to both the app and test projects referenced there.
+
+Run `npm run build` to compile the application and `npm test` to compile and
+run the unit tests. Do not disable strict checks to work around a type error;
+fix the underlying type or model the optional value explicitly.
 
 ## Five hardest compilation blockers
 

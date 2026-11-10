@@ -1,30 +1,52 @@
-# Self-Audit for Assignments 1–3
+# Self-audit
 
-This audit reviews the work delivered across the first three assignments: route architecture, shared app state, guard/error handling, and the attribute-edit workflow.
+This audit checks the current implementation and revisits the earlier findings
+in the assignment notes. It is a project-maintenance snapshot, not a security
+assessment.
 
-## 5 things I did well
+## What is working well
 
-1. I created a clean, centralized state layer for the app. The `BehaviorSubject`-based store in `src/app/core/services/app-state-store.ts:15-82` keeps authentication, lookup data, and attributes in one place, which makes state updates predictable and easier to reason about in the UI.
-2. I used route guards to protect private pages. The auth flow in `src/app/core/guards/auth.guard.ts:4-18` and the attribute route config in `src/app/features/attribute/attribute.routes.ts:7-30` show that I treated security as an application concern rather than a component concern.
-3. I implemented a resolver for edit-page data loading. `src/app/core/resolvers/attribute.resolvers.ts:7-29` fetches the attribute before the edit screen renders, which prevents blank states and keeps the editing flow consistent with the route data model.
-4. I kept the app organized by feature and layer. The structure around `src/app/app.routes.ts:7-38` plus the `core`, `shared`, and `features` folders demonstrates a maintainable Angular layout instead of a one-off component-only implementation.
-5. I tightened TypeScript safety during the strict-mode pass. The fixes documented in `STRICT-MODE.md:1-21` and the updated guard spec in `src/app/guards/unsaved-changes-guard.spec.ts:1-17` show that I corrected import mismatches and type errors instead of masking them.
+1. **Clear separation of concerns.** `core`, `features`, and `shared` separate
+   app infrastructure, business workflows, and reusable UI.
+2. **Protected route workflows.** Authentication and role guards protect the
+   dashboard, admin errors page, and attribute mutation routes.
+3. **Resolved edit data.** The edit route loads its attribute through a
+   resolver and redirects to the list when the ID or API lookup fails.
+4. **Unsaved-edit handling.** The edit route uses a deactivation guard and the
+   guard tolerates a missing component or hook.
+5. **Reduced initial route bundle.** Login, dashboard, not-found, and
+   attribute routes are loaded on demand; bundle measurements are in
+   [PERFORMANCE.md](./PERFORMANCE.md).
 
-## 5 things I would improve
+## Earlier audit findings and current status
 
-1. Dashboard protection was incomplete. `src/app/app.routes.ts:18-26` allowed `/dashboard` to render without `authGuard`, so a logged-out visitor could still access it. Fix: add `canActivate: [authGuard]` to the dashboard route and keep all app pages behind the same auth policy.
-2. The unsaved-changes guard was not defensive enough. `src/app/guards/unsaved-changes-guard.ts:1-13` assumed a component always existed and always had a `canDeactivate()` method. Fix: guard against `null`/missing components and return `true` when no deactivation hook is available.
-3. The edit workflow used a hardcoded audit value instead of the current logged-in user. `src/app/features/attribute/components/edit-attribute/edit-attribute.ts:33-177` set `UpdatedBy = 'Current User'`, which breaks audit fidelity. Fix: use `this.authService.currentUser?.username ?? 'Unknown user'` and keep the value synchronized with real auth state.
-4. The resolver and edit component did not guard against missing route data. The edit screen assumes `this.route.snapshot.data['attribute']` always exists in `src/app/features/attribute/components/edit-attribute/edit-attribute.ts:58-88`. Fix: validate the resolved attribute before copying it, and redirect to `/attributes` when the item is unavailable.
-5. Recent activity was persisted only in browser local storage. `src/app/core/services/activity.ts:12-70` kept history on one browser and could lose it when browser data was cleared. Fix: persist activity through the existing JSON Server API so it can be loaded across sessions and devices that share the server.
+| Earlier finding | Current status |
+|---|---|
+| Dashboard was not guarded | Resolved: `/dashboard` uses `authGuard`. |
+| Deactivation guard assumed a valid component hook | Resolved: the active guard checks for a component and callable `canDeactivate()` hook. |
+| Edit audit updates used a hard-coded user label | Resolved for edits: the edit flow uses the authenticated username or `Unknown user`. |
+| Edit page assumed resolver data always existed | Resolved: the resolver handles missing IDs and API errors by redirecting to `/attributes`. |
+| Recent activity was stored only in browser storage | Resolved: `ActivityService` reads and writes the API's `activities` collection. |
 
-## Top 3 improvements applied to the actual code
+## Remaining improvements
 
-I implemented the highest-priority fixes in the codebase:
+1. **Production API is not configured.** `environment.prod.ts` contains a
+   placeholder URL; deployment needs a real API endpoint.
+2. **Authentication is demo-level.** The current-user flag is held only in
+   memory and the local login flow is not backed by a server-side identity
+   provider. It does not persist across reloads.
+3. **Create audit attribution is inconsistent.** The add-attribute flow sets
+   `UpdatedBy` to the literal `Current User`, while the edit flow uses the
+   authenticated username. Use the same identity source for both flows.
+4. **Activity failures are only reported to the console.** `ActivityService`
+   logs load/save failures with `console.error`; users do not receive a
+   dedicated activity-specific error state.
+5. **Performance evidence is incomplete.** Bundle comparisons are recorded,
+   but the Lighthouse baseline and run environment are missing. See
+   [PERFORMANCE.md](./PERFORMANCE.md) before making score-improvement claims.
 
-1. Protected the dashboard route with the auth guard in `src/app/app.routes.ts:18-26`.
-2. Validated the resolved attribute and switched the audit field to the current authenticated username in `src/app/features/attribute/components/edit-attribute/edit-attribute.ts:58-88` and `src/app/features/attribute/components/edit-attribute/edit-attribute.ts:144-178`.
-3. Replaced browser-local activity persistence with the existing JSON Server API and added its `activities` collection in `src/app/core/services/activity.ts:1-91` and `db.json`.
+## Scope note
 
-
-
+The project is backed by JSON Server for local development. Its API and
+client-side guards are suitable for demonstrating UI workflows, not for
+enforcing production authorization or durable data integrity.

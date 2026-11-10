@@ -9,17 +9,67 @@ This project is the UI foundation for an Attribute Management System, developed 
 
 ### Run the Application
 
+Install dependencies once:
+
+```bash
+npm ci
+```
+
+Start the JSON Server API in one terminal:
+
+```bash
+npm run api
+```
+
+Start the Angular application in a second terminal:
+
 ```bash
 npm start
 ```
 
-If the start script is unavailable, use:
+Open `http://localhost:4200/` in your browser. The development API is served
+from `http://localhost:3000` and uses the checked-in `db.json`.
+
+To build the production application, run `npm run build`. The production API
+URL is a placeholder in `src/environments/environment.prod.ts` and must be
+configured for a real deployment.
+
+Run unit tests with:
 
 ```bash
-npx ng serve
+npm test
 ```
 
-Open `http://localhost:4200/` in your browser.
+### Architecture overview
+
+The app uses standalone Angular components, route-level lazy loading, and
+application-wide services. `core` contains infrastructure and shared state,
+`features` contains business workflows, and `shared` contains reusable UI
+building blocks. Attribute and lookup data are fetched from the JSON Server
+API; API DTOs are mapped to frontend interfaces by `MappingService`.
+
+See [ARCHITECTURE.md](./ARCHITECTURE.md) for the component tree, state flow,
+and responsibilities of every application service.
+
+### Folder structure
+
+```text
+src/
+  app/
+    core/       Application-wide services, guards, interceptors, resolvers
+    features/   Authentication, dashboard, attribute, and admin workflows
+    shared/     Reusable components, directives, and pipes
+    interface/  Frontend models and API DTOs
+    validator/  Attribute-specific validation
+  environments/ API configuration for development and production
+  styles.css    Global styles
+db.json         Local JSON Server data
+screenshots/    Checked-in implementation and measurement screenshots
+```
+
+Design trade-offs are recorded in [DECISIONS.md](./DECISIONS.md). Performance
+measurements and their limitations are documented in
+[PERFORMANCE.md](./PERFORMANCE.md).
 
 ## Standalone Components vs NgModules
 
