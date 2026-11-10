@@ -11,7 +11,7 @@
         Refresh
       </button>
       @if (isAdmin) {
-        <a class="add-attribute-link" routerLink="/attributes/add">Add Attribute</a>
+        <a class="page-action-link" routerLink="/attributes/add">Add Attribute</a>
       }
     </div>
   </div>
@@ -104,9 +104,21 @@
         </span>
       </td>
 
-      <td style="width: 10%">{{ attribute.CreatedOn | relativeTime }}</td>
+      <td
+        class="attribute-date-cell"
+        style="width: 10%"
+        [title]="attribute.CreatedOn | relativeTime"
+      >
+        {{ attribute.CreatedOn | relativeTime }}
+      </td>
 
-      <td style="width: 9%">{{ attribute.UpdatedOn | relativeTime }}</td>
+      <td
+        class="attribute-date-cell"
+        style="width: 9%"
+        [title]="attribute.UpdatedOn | relativeTime"
+      >
+        {{ attribute.UpdatedOn | relativeTime }}
+      </td>
 
       <td style="width: 8%">
         @if (isAdmin) {

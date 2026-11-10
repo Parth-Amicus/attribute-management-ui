@@ -42,6 +42,12 @@ table {
   white-space: nowrap;
 }
 
+.attribute-date-cell {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 th,
 td {
   padding: 14px 16px;
@@ -208,7 +214,7 @@ td a:hover,
   color: #a12622;
 }
 
-.add-attribute-link {
+.page-action-link {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -248,12 +254,12 @@ td a:hover,
   opacity: 0.65;
 }
 
-.add-attribute-link:hover {
+.page-action-link:hover {
   border-color: #254b6b;
   background: #254b6b;
 }
 
-.add-attribute-link:active {
+.page-action-link:active {
   transform: translateY(1px);
 }
 
@@ -280,7 +286,7 @@ td a:hover,
     align-items: flex-start;
   }
 
-  .add-attribute-link {
+  .page-action-link {
     flex-shrink: 0;
   }
 

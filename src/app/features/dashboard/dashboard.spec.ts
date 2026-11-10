@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 import { Subject, of } from 'rxjs';
 import { DashboardComponent } from './dashboard';
 import { AttributeService } from '../../core/services/attribute';
@@ -34,6 +35,7 @@ describe('DashboardComponent', () => {
     await TestBed.configureTestingModule({
       imports: [DashboardComponent],
       providers: [
+        provideRouter([]),
         {
           provide: AttributeService,
           useValue: { getAttributes: () => attributesSubject.asObservable() }

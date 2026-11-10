@@ -2,6 +2,10 @@
 <app-loader />
 @if (currentUser(); as user) {
   <header class="app-header">
+    <nav class="app-navigation" aria-label="Main navigation">
+      <a routerLink="/dashboard">Dashboard</a>
+      <a routerLink="/attributes">Attribute List</a>
+    </nav>
     <div class="user-profile">
       <span class="username">{{ user.username }}</span>
       <span class="role-badge" [appActiveStatus]="user.role">{{ user.role }}</span>

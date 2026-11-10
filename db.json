@@ -361,18 +361,6 @@
       "updated_by": "Amit"
     },
     {
-      "id": "32",
-      "attribute_name": "Virtual Scroll Demo Attribute 032",
-      "business_unit_name": "Engineering",
-      "customer_location_name": "Mumbai",
-      "company_name": "Abc Technology",
-      "is_active": false,
-      "created_on": "2023-09-06T00:00:00.000Z",
-      "created_by": "Amit",
-      "updated_on": "2023-09-06T00:00:00.000Z",
-      "updated_by": "Rahul"
-    },
-    {
       "id": "33",
       "attribute_name": "Virtual Scroll Demo Attribute 033",
       "business_unit_name": "Finance",
@@ -2538,6 +2526,14 @@
       "id": "Jk42LvuL1Lg"
     }
   ],
-  "activities": [],
+  "activities": [
+    {
+      "action": "Deleted",
+      "attributeName": "Virtual Scroll Demo Attribute 032",
+      "performedBy": "admin",
+      "performedAt": "2026-11-10T17:10:37.714Z",
+      "id": "LCaW6469wcs"
+    }
+  ],
   "$schema": "./node_modules/json-server/schema.json"
 }

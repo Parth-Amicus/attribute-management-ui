@@ -9,6 +9,26 @@
   background: #fff;
 }
 
+.app-navigation {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-right: auto;
+}
+
+.app-navigation a {
+  color: #315f85;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+  text-underline-offset: 3px;
+}
+
+.app-navigation a:hover {
+  color: #254b6b;
+  text-decoration: underline;
+}
+
 .user-profile {
   display: flex;
   align-items: center;
@@ -59,8 +79,14 @@
 
 @media (max-width: 640px) {
   .app-header {
+    flex-wrap: wrap;
     gap: 12px;
     padding-right: 18px;
     padding-left: 18px;
+  }
+
+  .app-navigation {
+    flex-basis: 100%;
+    order: 1;
   }
 }
