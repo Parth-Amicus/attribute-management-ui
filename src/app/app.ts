@@ -1,6 +1,6 @@
 
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-import { Router, RouterOutlet } from '@angular/router';
+import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { ToastComponent } from './shared/components/toast/toast';
 import { LoaderComponent } from './shared/components/loader/loader';
 import { AuthService } from './core/services/auth';
@@ -11,6 +11,7 @@ import { ActiveStatusDirective } from './shared/directives/active-status';
 @Component({
   imports: [ // we need to import ROuterOutelt etc because standalone component manage their own depencencies 
     RouterOutlet,
+    RouterLink,
     ToastComponent,
     LoaderComponent,
     ActiveStatusDirective

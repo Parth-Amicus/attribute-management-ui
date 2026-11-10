@@ -6,6 +6,9 @@
       <span class="username">{{ user.username }}</span>
       <span class="role-badge" [appActiveStatus]="user.role">{{ user.role }}</span>
     </div>
+    @if (user.role === 'Admin') {
+      <a routerLink="/admin/errors">Error log</a>
+    }
     <button class="logout-button" type="button" (click)="logout()">Logout</button>
   </header>
 }

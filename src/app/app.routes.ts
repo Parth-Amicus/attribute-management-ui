@@ -2,6 +2,7 @@
 import { Routes } from '@angular/router';
 
 import { authGuard } from './core/guards/auth.guard';
+import { roleGuard } from './core/guards/role.guard';
 
 //Works on first match
 export const routes: Routes = [
@@ -10,13 +11,20 @@ export const routes: Routes = [
     redirectTo: 'login', //redirects the user to /login
     pathMatch: 'full' //default is prefix and '' is prefix of every path
   },
-{
-  path: 'attributes',
-  canActivate: [authGuard],
-  loadChildren: () =>
-    import('./features/attribute/attribute.routes')
-      .then(module => module.ATTRIBUTE_ROUTES)
-},
+  {
+    path: 'admin/errors',
+    canActivate: [authGuard, roleGuard],
+    loadComponent: () =>
+      import('./features/admin/errors/admin-errors')
+        .then(module => module.AdminErrorsComponent)
+  },
+  {
+    path: 'attributes',
+    canActivate: [authGuard],
+    loadChildren: () =>
+      import('./features/attribute/attribute.routes')
+        .then(module => module.ATTRIBUTE_ROUTES)
+  },
   {
     path: 'dashboard',
   loadComponent: () =>

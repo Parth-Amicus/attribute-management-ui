@@ -2,6 +2,7 @@
 import { HttpInterceptorFn, HttpRequest } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
+import { ErrorLogService } from '../services/error-log';
 import { ToastService } from '../services/toast';
 import { AppStateStore } from '../services/app-state-store';
 import { catchError, finalize, retry, throwError, timer } from 'rxjs';
@@ -13,6 +14,7 @@ export const httpInterceptor: HttpInterceptorFn = (req, next) => { //req is the 
 
   const router = inject(Router);
   const toastService = inject(ToastService);
+  const errorLog = inject(ErrorLogService);
   const store = inject(AppStateStore);
 
   // Generate a unique ID for every HTTP request
@@ -44,14 +46,13 @@ export const httpInterceptor: HttpInterceptorFn = (req, next) => { //req is the 
   return retriedResponse.pipe(
 
     catchError(error => {
+      const status = typeof error?.status === 'number' ? error.status : 0;
+      const message = getHttpErrorMessage(status);
+      errorLog.log(error, 'HTTP', status);
+      toastService.show(message);
 
-      if (error.status === 401) {
-        toastService.show('Your session has expired please log in again');
+      if (status === 401) {
         void router.navigate(['/login']);
-      }
-
-      if (error.status === 500) {
-        toastService.show('Something went wrong on the server');
       }
 
       return throwError(() => error);
@@ -74,3 +75,20 @@ export const httpInterceptor: HttpInterceptorFn = (req, next) => { //req is the 
     })
   );
 };
+
+export function getHttpErrorMessage(status: number): string {
+  switch (status) {
+    case 400:
+      return 'Invalid request';
+    case 401:
+      return 'Please log in';
+    case 403:
+      return 'Access denied';
+    case 404:
+      return 'Not found';
+    default:
+      return status >= 500
+        ? 'Server error, try again'
+        : 'Unable to complete request, try again';
+  }
+}
