@@ -62,7 +62,12 @@ export class EditAttributeComponent implements OnInit {
   ngOnInit(): void {
 
     // Get the attribute already fetched by the Resolver
-    const existingAttribute = this.route.snapshot.data['attribute'] as IAttribute;
+    const existingAttribute = this.route.snapshot.data['attribute'] as IAttribute | null;
+
+    if (!existingAttribute) {
+      void this.router.navigate(['/attributes']);
+      return;
+    }
 
     // Copy the resolved record so typing does not immediately change stored data
     this.model = {
@@ -192,7 +197,7 @@ export class EditAttributeComponent implements OnInit {
     this.model.CustomerLocationName = location.CustomerLocationName;
     this.model.CompanyName = company.CompanyName;
     this.model.UpdatedOn = new Date();
-    this.model.UpdatedBy = 'Current User';
+    this.model.UpdatedBy = this.authService.currentUser?.username ?? 'Unknown user';
 
     // Update attribute through API
     this.attributeService.updateAttribute(this.model).subscribe({

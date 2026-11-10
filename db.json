@@ -37,18 +37,6 @@
       "updated_by": "Current User"
     },
     {
-      "id": "4",
-      "attribute_name": "Customer Reference",
-      "business_unit_name": "Operations",
-      "customer_location_name": "Bengaluru",
-      "company_name": "Abc Consulting",
-      "is_active": true,
-      "created_on": "2025-02-01",
-      "created_by": "Rahul",
-      "updated_on": "2026-07-21",
-      "updated_by": "Amit"
-    },
-    {
       "id": "5",
       "attribute_name": "Department Name",
       "business_unit_name": "Human Resources",
@@ -2550,5 +2538,6 @@
       "id": "Jk42LvuL1Lg"
     }
   ],
+  "activities": [],
   "$schema": "./node_modules/json-server/schema.json"
 }
